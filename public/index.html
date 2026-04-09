@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitação de Criativo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F3EE; --surface: #FFFFFF; --surface2: #F9F8F5;
+    --border: #E2DDD6; --border2: #C8C2B8;
+    --text: #1A1714; --text2: #6B6560; --text3: #9C9690;
+    --accent: #C4622D; --accent-light: #F5EDE7; --accent-dark: #9E4A20;
+    --success: #2D7A4F; --success-light: #E8F5EE;
+    --danger: #B93A3A; --danger-light: #FAEAEA; --danger-border: #E8A0A0;
+    --radius: 10px; --radius-sm: 6px; --radius-pill: 999px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; font-size: 15px; line-height: 1.6; }
+  .page { max-width: 680px; margin: 0 auto; }
+
+  .header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .header-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .badge { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--accent-light); color: var(--accent); border: 1px solid rgba(196,98,45,0.2); }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 2rem; font-weight: 400; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.4rem; }
+  .header-sub { font-size: 14px; color: var(--text2); }
+  .progress-wrap { margin-top: 1.25rem; display: flex; align-items: center; gap: 12px; }
+  .progress-bar-outer { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-bar-inner { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 12px; color: var(--text3); white-space: nowrap; min-width: 80px; text-align: right; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm); animation: fadeUp 0.4s ease both; }
+  .section:nth-child(2){animation-delay:.05s}.section:nth-child(3){animation-delay:.1s}.section:nth-child(4){animation-delay:.15s}.section:nth-child(5){animation-delay:.2s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--border); }
+  .section-num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text2); }
+
+  .field { margin-bottom: 1.1rem; } .field:last-child { margin-bottom: 0; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .req { color: var(--accent); margin-left: 2px; }
+  .hint { font-size: 12px; color: var(--text3); margin-top: 5px; line-height: 1.5; }
+  .err-msg { font-size: 12px; color: var(--danger); margin-top: 5px; display: none; }
+
+  input[type="text"], input[type="password"], select, textarea {
+    width: 100%; padding: 9px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--text); background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s; -webkit-appearance: none;
+  }
+  input[type="text"]:focus, input[type="password"]:focus, select:focus, textarea:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(196,98,45,0.1); }
+  input::placeholder, textarea::placeholder { color: var(--text3); }
+  textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239C9690' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+
+  .field.has-error input, .field.has-error textarea, .field.has-error select {
+    border-color: var(--danger-border) !important;
+    background: var(--danger-light) !important;
+    box-shadow: 0 0 0 3px rgba(185,58,58,0.1) !important;
+  }
+  .field.has-error .pill-group .pill-wrap,
+  .field.has-error .tile-grid { outline: 2px solid var(--danger-border); border-radius: var(--radius-sm); }
+  .field.has-error label { color: var(--danger); }
+  .field.has-error .err-msg { display: block; }
+
+  .pill-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { padding: 7px 16px; border: 1px solid var(--border); border-radius: var(--radius-pill); font-size: 13px; color: var(--text2); background: var(--surface2); cursor: pointer; transition: all .15s; user-select: none; }
+  .pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+
+  .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tile { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; font-size: 13px; color: var(--text2); transition: all .15s; user-select: none; }
+  .tile:hover { border-color: var(--accent); background: var(--accent-light); color: var(--text); }
+  .tile.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent-dark); font-weight: 500; }
+  .tile-check { width: 18px; height: 18px; border: 1.5px solid var(--border2); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: transparent; transition: all .15s; }
+  .tile.active .tile-check { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .submit-area { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; }
+  .status-msg { font-size: 13px; color: var(--text3); flex: 1; }
+  .btn-group { display: flex; gap: 8px; }
+  .btn { padding: 10px 22px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; border: 1px solid transparent; white-space: nowrap; }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--text2); }
+  .btn-ghost:hover { background: var(--surface); border-color: var(--border2); color: var(--text); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-dl { background: var(--text); color: #fff; border-color: var(--text); display: inline-flex; align-items: center; gap: 8px; }
+  .btn-dl:hover { background: #333; }
+  .btn-claude { background: var(--accent-light); color: var(--accent-dark); border-color: rgba(196,98,45,0.3); display: inline-flex; align-items: center; gap: 6px; }
+  .btn-claude:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-copy { background: var(--surface); border-color: var(--border); color: var(--text2); display: inline-flex; align-items: center; gap: 8px; }
+  .btn-copy:hover { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+  .btn-copy.copied { border-color: var(--success); color: var(--success); background: var(--success-light); }
+  .btn[disabled], .btn.is-loading { opacity: 0.7; pointer-events: none; }
+
+  .btn-spinner {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid currentColor; border-right-color: transparent;
+    animation: spin 0.8s linear infinite; flex-shrink: 0;
+  }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--text); color: #fff; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; opacity: 0; transform: translateY(10px); transition: all .3s ease; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .result-card { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 1rem; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .result-card.show { display: block; animation: fadeUp 0.4s ease; }
+  .result-header { background: var(--accent); padding: 1.5rem; color: white; }
+  .result-eyebrow { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 5px; }
+  .result-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; font-weight: 400; margin-bottom: 4px; }
+  .result-meta { font-size: 12px; opacity: 0.8; }
+  .result-body { padding: 1.5rem; }
+  .r-section { margin-bottom: 1.25rem; }
+  .r-section:last-child { margin-bottom: 0; }
+  .r-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; padding-bottom: 5px; border-bottom: 1px solid var(--border); }
+  .r-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem; }
+  .r-field-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+  .r-field-value { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.5; }
+  .r-text { font-size: 13px; color: var(--text2); line-height: 1.6; white-space: pre-wrap; }
+  .r-tag { display: inline-block; background: var(--accent-light); color: var(--accent-dark); font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: var(--radius-pill); margin: 2px 2px 2px 0; border: 1px solid rgba(196,98,45,0.2); }
+  .result-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .result-footer-note { font-size: 12px; color: var(--text3); flex: 1; min-width: 120px; }
+
+  .copy-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .5rem; animation: fadeUp 0.4s ease both; }
+  .copy-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .copy-card-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .copy-card-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .copy-card-angulo { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+  .copy-card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .copy-card-row { display: flex; flex-direction: column; gap: 3px; }
+  .copy-card-lbl { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text3); }
+  .copy-card-headline { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .copy-card-txt { font-size: 13px; color: var(--text2); line-height: 1.55; }
+  .copy-card-cta { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-pill); margin-top: 2px; width: fit-content; }
+  .copy-placeholder-stack { display: flex; flex-direction: column; gap: 10px; }
+  .copy-loading {
+    min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; border: 1px dashed var(--border2); border-radius: var(--radius); background: var(--surface2);
+  }
+  .copy-loading-spinner {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid rgba(196,98,45,0.25); border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+  }
+  .copy-loading-text { font-size: 13px; color: var(--text3); }
+
+  .access-modal-overlay {
+    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+    padding: 1rem; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 1000;
+  }
+  .access-modal-overlay.show { display: flex; animation: fadeUp 0.25s ease both; }
+  .access-modal-card {
+    width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .access-modal-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1.2; margin-bottom: 0.5rem; }
+  .access-modal-sub { font-size: 14px; color: var(--text2); margin-bottom: 1rem; }
+  .access-modal-error { color: var(--danger); font-size: 13px; margin-top: 0.65rem; min-height: 18px; }
+  .access-modal-actions { margin-top: 1rem; display: flex; justify-content: flex-end; }
+
+  @media (max-width: 520px) {
+    .copy-cards-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 520px) {
+    .field-row, .tile-grid, .r-row { grid-template-columns: 1fr; }
+    .submit-area { flex-direction: column; align-items: stretch; }
+    .btn-group, .result-footer { flex-direction: column; }
+    .header-title { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-eyebrow"><span class="badge">Gestão de Tráfego</span></div>
+    <h1 class="header-title">Solicitação de Criativo</h1>
+    <p class="header-sub">Preencha todos os campos obrigatórios para gerar o briefing.</p>
+    <div class="progress-wrap">
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+      <span class="progress-label" id="progressLabel">0 de 8 campos</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">1</div><span class="section-title">Identificação</span></div>
+
+    <div class="field-row">
+      <div class="field" id="wrap-nome">
+        <label>Solicitante <span class="req">*</span></label>
+        <input type="text" id="f-nome" placeholder="Seu nome completo">
+        <span class="err-msg">Preencha o nome do solicitante.</span>
+      </div>
+      <div class="field" id="wrap-campanha">
+        <label>Campanha / Projeto <span class="req">*</span></label>
+        <input type="text" id="f-campanha" placeholder="Ex: Black Friday 2025">
+        <span class="err-msg">Preencha o nome da campanha.</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Cliente</label>
+        <input type="text" id="f-cliente" placeholder="Ex: Loja ABC">
+      </div>
+      <div class="field">
+        <label>Produto / Link</label>
+        <input type="text" id="f-produto" placeholder="Ex: https://loja.com/produto-x">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">2</div><span class="section-title">Tipo de Criativo</span></div>
+
+    <div class="field" id="wrap-formato">
+      <label>Formato <span class="req">*</span></label>
+      <div class="pill-group" id="pg-formato">
+        <div class="pill">Feed estático</div>
+        <div class="pill">Carrossel</div>
+        <div class="pill">Stories / Reels</div>
+        <div class="pill">Vídeo</div>
+        <div class="pill">Banner</div>
+      </div>
+      <input type="text" id="f-formato-outro" placeholder="Outro formato..." style="margin-top:8px;">
+      <span class="err-msg">Selecione ou descreva um formato.</span>
+    </div>
+
+    <div class="field" id="wrap-plataforma">
+      <label>Plataforma(s) de veiculação <span class="req">*</span></label>
+      <div class="tile-grid" id="tg-plataforma">
+        <div class="tile"><div class="tile-check">✓</div>Meta (Facebook / Instagram)</div>
+        <div class="tile"><div class="tile-check">✓</div>Google Ads</div>
+        <div class="tile"><div class="tile-check">✓</div>TikTok</div>
+        <div class="tile"><div class="tile-check">✓</div>YouTube</div>
+        <div class="tile"><div class="tile-check">✓</div>LinkedIn</div>
+        <div class="tile"><div class="tile-check">✓</div>WhatsApp</div>
+      </div>
+      <input type="text" id="f-plataforma-outro" placeholder="Outra plataforma..." style="margin-top:8px;">
+      <span class="err-msg">Selecione ao menos uma plataforma.</span>
+    </div>
+
+    <div class="field-row">
+      <div class="field" id="wrap-versoes">
+        <label>Quantidade de versões <span class="req">*</span></label>
+        <select id="f-versoes">
+          <option value="">Selecione</option>
+          <option>1 versão</option><option>2 versões (A/B)</option><option>3 versões</option><option>4+ versões</option>
+        </select>
+        <span class="err-msg">Selecione a quantidade de versões.</span>
+      </div>
+      <div class="field" id="wrap-dimensoes">
+        <label>Dimensões / Resolução</label>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="pill-group" id="pg-dimensoes" style="flex-shrink:0;">
+            <div class="pill">4:5</div>
+            <div class="pill">9:16</div>
+          </div>
+          <input type="text" id="f-dimensoes-outro" placeholder="Outra dimensão..." style="flex:1; min-width:0;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">3</div><span class="section-title">Briefing Criativo</span></div>
+
+    <div class="field" id="wrap-objetivo">
+      <label>Objetivo do anúncio <span class="req">*</span></label>
+      <textarea id="f-objetivo" placeholder="Descreva o objetivo do anúncio: o que você quer que o público faça ou sinta ao ver esse criativo?"></textarea>
+      <span class="err-msg">Descreva o objetivo do anúncio.</span>
+    </div>
+
+    <div class="field" id="wrap-publico">
+      <label>Público-alvo <span class="req">*</span></label>
+      <textarea id="f-publico" placeholder="Descreva o público: idade, gênero, interesses, dores, estágio no funil..."></textarea>
+      <span class="err-msg">Descreva o público-alvo.</span>
+    </div>
+
+    <div class="field" id="wrap-mensagem">
+      <label>Mensagem principal / Oferta <span class="req">*</span></label>
+      <textarea id="f-mensagem" placeholder="O que deve ser comunicado? Qual a proposta de valor ou oferta central?"></textarea>
+      <span class="err-msg">Descreva a mensagem principal.</span>
+    </div>
+
+    <div class="field">
+      <label>Call to action (CTA)</label>
+      <input type="text" id="f-cta" placeholder="Ex: Saiba mais, Compre agora, Fale conosco">
+    </div>
+
+    <div class="field">
+      <label>Referências visuais / Inspirações</label>
+      <textarea id="f-referencias" placeholder="Cole links ou descreva um estilo de referência." style="min-height:70px;"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Conceitos de copy desejados</label>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:8px;">Selecione os conceitos para os quais quer sugestões de copy ao gerar o briefing.</p>
+      <div class="pill-group" id="pg-conceitos">
+        <div class="pill" data-conceito="remarketing">🔁 Remarketing</div>
+        <div class="pill" data-conceito="nativo">📰 Nativo / Notícia</div>
+        <div class="pill" data-conceito="promessa">🎯 Promessa + CTA</div>
+        <div class="pill" data-conceito="comparativo">⚖️ Comparativo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-num">4</div><span class="section-title">Restrições e Observações</span></div>
+    <div class="field"><label>Elementos obrigatórios</label><textarea id="f-obrigatorios" placeholder="Ex: logo no canto superior, cor azul da marca, selo de garantia..." style="min-height:70px;"></textarea></div>
+    <div class="field"><label>O que evitar / Restrições</label><textarea id="f-restricoes" placeholder="Ex: não usar fundo escuro, evitar palavras como 'grátis'..." style="min-height:70px;"></textarea></div>
+    <div class="field"><label>Observações adicionais</label><textarea id="f-obs" placeholder="Qualquer informação relevante que não se encaixou nos campos acima." style="min-height:70px;"></textarea></div>
+  </div>
+
+  <div class="submit-area">
+    <span class="status-msg" id="statusMsg">Preencha os campos obrigatórios para continuar.</span>
+    <div class="btn-group">
+      <button class="btn btn-ghost" id="btnReset">Limpar</button>
+      <button class="btn btn-primary" id="btnSubmit">Gerar briefing →</button>
+    </div>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="result-eyebrow">Gestão de Tráfego</div>
+      <div class="result-title">Solicitação de Criativo</div>
+      <div class="result-meta" id="r-meta"></div>
+    </div>
+    <div class="result-body">
+      <div class="r-section">
+        <div class="r-section-label">Identificação</div>
+        <div style="margin-bottom:.5rem"><div class="r-field-label">Solicitante</div><div class="r-field-value" id="r-nome"></div></div>
+        <div style="margin-bottom:.5rem"><div class="r-field-label">Campanha / Projeto</div><div class="r-field-value" id="r-campanha"></div></div>
+        <div style="margin-bottom:.5rem"><div class="r-field-label">Cliente</div><div class="r-field-value" id="r-cliente"></div></div>
+        <div style="margin-bottom:.25rem"><div class="r-field-label">Produto / Link</div><div class="r-field-value" id="r-produto"></div></div>
+      </div>
+      <div class="r-section">
+        <div class="r-section-label">Tipo de Criativo</div>
+        <div style="margin-bottom:.6rem"><div class="r-field-label">Formato</div><div class="r-field-value" id="r-formato" style="margin-top:4px;"></div></div>
+        <div class="r-row">
+          <div><div class="r-field-label">Versões</div><div class="r-field-value" id="r-versoes"></div></div>
+        </div>
+        <div><div class="r-field-label">Plataformas</div><div class="r-field-value" id="r-plataformas" style="margin-top:4px;"></div></div>
+      </div>
+      <div class="r-section">
+        <div class="r-section-label">Briefing</div>
+        <div style="margin-bottom:.75rem"><div class="r-field-label">Objetivo do anúncio</div><div class="r-text" id="r-objetivo"></div></div>
+        <div style="margin-bottom:.75rem"><div class="r-field-label">Público-alvo</div><div class="r-text" id="r-publico"></div></div>
+        <div style="margin-bottom:.75rem"><div class="r-field-label">Mensagem principal</div><div class="r-text" id="r-mensagem"></div></div>
+        <div class="r-row">
+          <div id="r-cta-wrap"><div class="r-field-label">CTA</div><div class="r-field-value" id="r-cta"></div></div>
+        </div>
+      </div>
+      <div class="r-section">
+        <div class="r-section-label">Copy do criativo</div>
+        <div id="copySectionContent"></div>
+      </div>
+      <div class="r-section" id="r-extras-section" style="display:none">
+        <div class="r-section-label">Restrições e Observações</div>
+        <div id="r-extras-body"></div>
+      </div>
+    </div>
+    <div class="result-footer">
+      <span class="result-footer-note">Baixe o PDF, copie o texto ou gere sugestões de copy com IA.</span>
+      <button class="btn btn-dl" id="btnDownload">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3.5 6.5 7 10l3.5-3.5M1.5 12.5h11" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Baixar PDF
+      </button>
+      <button class="btn btn-copy" id="btnCopy">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Copiar texto
+      </button>
+      <button class="btn btn-claude" id="btnClaude">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2C4.24 2 2 4.24 2 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm.5 7.5h-1v-4h1v4zm0-5h-1V3.5h1V4.5z" fill="currentColor"/></svg>
+        ✨ Gerar copy com IA
+      </button>
+      <button class="btn btn-ghost" id="btnNew">Nova solicitação</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="access-modal-overlay" id="accessModal">
+  <div class="access-modal-card" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle">
+    <h2 class="access-modal-title" id="accessModalTitle">Acesso protegido</h2>
+    <p class="access-modal-sub">Insira o código de acesso para gerar copy com IA.</p>
+    <div class="field" style="margin-bottom:0;">
+      <input type="password" id="accessCodeInput" placeholder="Código de acesso">
+      <div class="access-modal-error" id="accessModalError"></div>
+    </div>
+    <div class="access-modal-actions">
+      <button class="btn btn-primary" id="accessModalSubmit">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedPlatforms = [];
+let selectedFormats = [];
+let selectedDimensoes = [];
+let selectedConceitos = [];
+let fd = {};
+let jsPDF = null;
+let isGeneratingCopy = false;
+
+const ACCESS_CODE_KEY = 'solicitacao_criativo_access_code';
+const COPY_META = {
+  remarketing: { label: 'Remarketing (urgência/escassez)', color: '#E67E22', icon: '🔁' },
+  nativo: { label: 'Nativo/Notícia (formato editorial)', color: '#3498DB', icon: '📰' },
+  promessa: { label: 'Promessa + CTA (benefício direto)', color: '#27AE60', icon: '🎯' },
+  comparativo: { label: 'Comparativo (antes/depois ou nós vs eles)', color: '#9B59B6', icon: '⚖️' }
+};
+
+const REQUIRED = [
+  { val: () => g('f-nome'),      wrap: 'wrap-nome' },
+  { val: () => g('f-campanha'),  wrap: 'wrap-campanha' },
+  { val: () => selectedFormats.length > 0 || g('f-formato-outro') ? 'ok' : '', wrap: 'wrap-formato' },
+  { val: () => selectedPlatforms.length > 0 || g('f-plataforma-outro') ? 'ok' : '', wrap: 'wrap-plataforma' },
+  { val: () => document.getElementById('f-versoes').value, wrap: 'wrap-versoes' },
+  { val: () => g('f-objetivo'),  wrap: 'wrap-objetivo' },
+  { val: () => g('f-publico'),   wrap: 'wrap-publico' },
+  { val: () => g('f-mensagem'),  wrap: 'wrap-mensagem' }
+];
+
+function g(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function clearError(wid) {
+  var w = document.getElementById(wid);
+  if (w) w.classList.remove('has-error');
+}
+
+function getFilledCount() { return REQUIRED.filter(function(r){ return r.val(); }).length; }
+
+function updateProgress() {
+  var filled = getFilledCount();
+  var total = REQUIRED.length;
+  document.getElementById('progressBar').style.width = Math.round(filled / total * 100) + '%';
+  document.getElementById('progressLabel').textContent = filled + ' de ' + total + ' campos';
+  var m = document.getElementById('statusMsg');
+  if (filled === total) { m.textContent = 'Tudo preenchido. Pronto para gerar!'; m.style.color = 'var(--success)'; }
+  else { m.textContent = (total - filled) + ' campo(s) obrigatório(s) faltando.'; m.style.color = 'var(--text3)'; }
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+function validateAndHighlight() {
+  var valid = true;
+  REQUIRED.forEach(function(r) {
+    var w = document.getElementById(r.wrap);
+    if (!r.val()) { if (w) w.classList.add('has-error'); valid = false; }
+    else if (w) { w.classList.remove('has-error'); }
+  });
+  if (!valid) {
+    var first = document.querySelector('.has-error');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  return valid;
+}
+
+function collect() {
+  return {
+    nome: g('f-nome'),
+    campanha: g('f-campanha'),
+    cliente: g('f-cliente'),
+    produto: g('f-produto'),
+    formatos: selectedFormats.concat(g('f-formato-outro')).filter(Boolean),
+    versoes: document.getElementById('f-versoes').value,
+    dimensoes: selectedDimensoes.concat(g('f-dimensoes-outro')).filter(Boolean).join(', '),
+    plataformas: selectedPlatforms.concat(g('f-plataforma-outro')).filter(Boolean),
+    objetivo: g('f-objetivo'),
+    publico: g('f-publico'),
+    mensagem: g('f-mensagem'),
+    cta: g('f-cta'),
+    referencias: g('f-referencias'),
+    obrigatorios: g('f-obrigatorios'),
+    restricoes: g('f-restricoes'),
+    obs: g('f-obs'),
+    conceitos: selectedConceitos.slice(),
+    copysuggestions: [],
+    dataGeracao: new Date().toLocaleDateString('pt-BR')
+  };
+}
+
+function escHTML(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function hexToRgba(hex, alpha) {
+  var clean = (hex || '').replace('#', '');
+  if (clean.length !== 6) return 'rgba(196,98,45,' + alpha + ')';
+  var r = parseInt(clean.slice(0, 2), 16);
+  var gVal = parseInt(clean.slice(2, 4), 16);
+  var b = parseInt(clean.slice(4, 6), 16);
+  return 'rgba(' + r + ',' + gVal + ',' + b + ',' + alpha + ')';
+}
+
+function normalizeAnguloKey(angulo) {
+  var text = String(angulo || '').toLowerCase();
+  if (text.indexOf('remarketing') !== -1) return 'remarketing';
+  if (text.indexOf('nativo') !== -1 || text.indexOf('notícia') !== -1 || text.indexOf('noticia') !== -1 || text.indexOf('editorial') !== -1) return 'nativo';
+  if (text.indexOf('promessa') !== -1) return 'promessa';
+  if (text.indexOf('comparativo') !== -1 || text.indexOf('antes/depois') !== -1 || text.indexOf('nós vs eles') !== -1 || text.indexOf('nos vs eles') !== -1) return 'comparativo';
+  return '';
+}
+
+function enrichCopySuggestion(item) {
+  var key = normalizeAnguloKey(item.angulo);
+  var meta = COPY_META[key] || { color: 'var(--accent)', icon: '✨' };
+  return {
+    angulo: item.angulo,
+    headline: item.headline || '',
+    subheadline: item.subheadline || '',
+    texto: item.texto || '',
+    cta: item.cta || '',
+    color: meta.color,
+    icon: meta.icon,
+    key: key
+  };
+}
+
+function getCopyPlaceholderHTML() {
+  return '' +
+    '<div class="copy-placeholder-stack">' +
+      '<div style="background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:10px 14px;">' +
+        '<div class="r-field-label" style="margin-bottom:4px;">Headline</div>' +
+        '<div style="font-size:13px;color:var(--text3);font-style:italic;">Insira aqui após gerar com IA →</div>' +
+      '</div>' +
+      '<div style="background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:10px 14px;">' +
+        '<div class="r-field-label" style="margin-bottom:4px;">Subheadline</div>' +
+        '<div style="font-size:13px;color:var(--text3);font-style:italic;">Insira aqui após gerar com IA →</div>' +
+      '</div>' +
+      '<div style="background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:10px 14px;">' +
+        '<div class="r-field-label" style="margin-bottom:4px;">Texto</div>' +
+        '<div style="font-size:13px;color:var(--text3);font-style:italic;">Insira aqui após gerar com IA →</div>' +
+      '</div>' +
+      '<div style="background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:10px 14px;">' +
+        '<div class="r-field-label" style="margin-bottom:4px;">CTA</div>' +
+        '<div style="font-size:13px;color:var(--text3);font-style:italic;">Insira aqui após gerar com IA →</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderCopyLoading() {
+  document.getElementById('copySectionContent').innerHTML =
+    '<div class="copy-loading">' +
+      '<div class="copy-loading-spinner" aria-hidden="true"></div>' +
+      '<div class="copy-loading-text">Gerando sugestões de copy...</div>' +
+    '</div>';
+}
+
+function renderCopyCards(suggestions) {
+  var html = '<div class="copy-cards-grid">';
+  suggestions.forEach(function(item) {
+    var ctaBg = hexToRgba(item.color, 0.12);
+    html += '' +
+      '<article class="copy-card">' +
+        '<div class="copy-card-header">' +
+          '<span class="copy-card-dot" style="background:' + escHTML(item.color) + ';"></span>' +
+          '<span class="copy-card-angulo" style="color:' + escHTML(item.color) + ';">' + escHTML(item.angulo) + '</span>' +
+        '</div>' +
+        '<div class="copy-card-body">' +
+          '<div class="copy-card-row">' +
+            '<span class="copy-card-lbl">Headline</span>' +
+            '<div class="copy-card-headline">' + escHTML(item.headline) + '</div>' +
+          '</div>' +
+          '<div class="copy-card-row">' +
+            '<span class="copy-card-lbl">Subheadline</span>' +
+            '<div class="copy-card-txt">' + escHTML(item.subheadline) + '</div>' +
+          '</div>' +
+          '<div class="copy-card-row">' +
+            '<span class="copy-card-lbl">Texto</span>' +
+            '<div class="copy-card-txt">' + escHTML(item.texto) + '</div>' +
+          '</div>' +
+          '<div class="copy-card-row">' +
+            '<span class="copy-card-lbl">CTA</span>' +
+            '<span class="copy-card-cta" style="color:' + escHTML(item.color) + ';background:' + ctaBg + ';">' + escHTML(item.cta) + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</article>';
+  });
+  html += '</div>';
+  document.getElementById('copySectionContent').innerHTML = html;
+}
+
+function renderCopySection(data) {
+  if (isGeneratingCopy) {
+    renderCopyLoading();
+    return;
+  }
+  if (data.copysuggestions && data.copysuggestions.length) {
+    renderCopyCards(data.copysuggestions);
+    return;
+  }
+  document.getElementById('copySectionContent').innerHTML = getCopyPlaceholderHTML();
+}
+
+function submitForm() {
+  if (!validateAndHighlight()) { showToast('Preencha os campos destacados em vermelho.'); return; }
+  fd = collect();
+  renderResult(fd);
+  var rc = document.getElementById('resultCard');
+  rc.classList.add('show');
+  setTimeout(function(){ rc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
+
+function renderResult(d) {
+  document.getElementById('r-meta').textContent = 'Solicitado por ' + d.nome + ' · ' + d.dataGeracao;
+  document.getElementById('r-nome').textContent = d.nome;
+  document.getElementById('r-campanha').textContent = d.campanha;
+  var clienteEl = document.getElementById('r-cliente'); if (clienteEl) clienteEl.textContent = d.cliente || '—';
+  var produtoEl = document.getElementById('r-produto'); if (produtoEl) produtoEl.textContent = d.produto || '—';
+  var fmtTags = d.formatos.map(function(f){ return '<span class="r-tag">' + escHTML(f) + '</span>'; }).join('') + (d.dimensoes ? ' <span style="font-size:12px;color:var(--text3)">· ' + escHTML(d.dimensoes) + '</span>' : '');
+  document.getElementById('r-formato').innerHTML = fmtTags;
+  document.getElementById('r-versoes').textContent = d.versoes;
+  document.getElementById('r-plataformas').innerHTML = d.plataformas.map(function(p){ return '<span class="r-tag">' + escHTML(p) + '</span>'; }).join('');
+  document.getElementById('r-objetivo').textContent = d.objetivo;
+  document.getElementById('r-publico').textContent = d.publico;
+  document.getElementById('r-mensagem').textContent = d.mensagem;
+  var ctaWrap = document.getElementById('r-cta-wrap');
+  if (d.cta) { document.getElementById('r-cta').textContent = d.cta; ctaWrap.style.display = ''; }
+  else { ctaWrap.style.display = 'none'; }
+  var extras = [
+    ['Referências visuais', d.referencias],
+    ['Elementos obrigatórios', d.obrigatorios],
+    ['O que evitar', d.restricoes],
+    ['Observações', d.obs]
+  ].filter(function(entry){ return entry[1]; });
+  if (extras.length) {
+    document.getElementById('r-extras-section').style.display = '';
+    document.getElementById('r-extras-body').innerHTML = extras.map(function(entry){
+      return '<div style="margin-bottom:.7rem"><div class="r-field-label">' + escHTML(entry[0]) + '</div><div class="r-text">' + escHTML(entry[1]) + '</div></div>';
+    }).join('');
+  } else {
+    document.getElementById('r-extras-section').style.display = 'none';
+  }
+  renderCopySection(d);
+}
+
+function buildCopyHTML(d) {
+  function esc(s){ return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function row(label, value) {
+    return '<p><strong>' + label + ':</strong> ' + esc(value) + '</p>';
+  }
+  var html = '';
+  html += '<h1>IDENTIFICAÇÃO</h1>';
+  html += row('Solicitante', d.nome);
+  html += row('Campanha', d.campanha);
+  if (d.cliente) html += row('Cliente', d.cliente);
+  if (d.produto) html += row('Produto / Link', d.produto);
+  html += '<h1>TIPO DE CRIATIVO</h1>';
+  html += row('Formato', d.formatos.join(', ') + (d.dimensoes ? ' (' + d.dimensoes + ')' : ''));
+  html += row('Plataformas', d.plataformas.join(', '));
+  html += row('Versões', d.versoes);
+  html += '<h1>BRIEFING</h1>';
+  html += row('Objetivo', d.objetivo);
+  html += row('Público-alvo', d.publico);
+  html += row('Mensagem principal', d.mensagem);
+  if (d.cta) html += row('CTA', d.cta);
+  if (d.referencias) html += row('Referências', d.referencias);
+  html += '<h1>COPY DO CRIATIVO</h1>';
+  html += '<p><strong>Headline:</strong></p><p>&nbsp;</p>';
+  html += '<p><strong>Subheadline:</strong></p><p>&nbsp;</p>';
+  html += '<p><strong>Texto:</strong></p><p>&nbsp;</p>';
+  html += '<p><strong>CTA:</strong></p><p>&nbsp;</p>';
+  var extras = [['Elementos obrigatórios', d.obrigatorios], ['O que evitar', d.restricoes], ['Observações', d.obs]].filter(function(e){ return e[1]; });
+  if (extras.length) {
+    html += '<h1>RESTRIÇÕES E OBSERVAÇÕES</h1>';
+    extras.forEach(function(e){ html += row(e[0], e[1]); });
+  }
+  if (d.copysuggestions && d.copysuggestions.length) {
+    html += '<h1>SUGESTÕES DE COPY</h1>';
+    d.copysuggestions.forEach(function(c) {
+      html += '<p><strong>' + esc((c.icon || '') + ' ' + c.angulo) + '</strong></p>';
+      html += '<p><strong>Headline:</strong> ' + esc(c.headline) + '</p>';
+      html += '<p><strong>Subheadline:</strong> ' + esc(c.subheadline) + '</p>';
+      html += '<p><strong>Texto:</strong> ' + esc(c.texto) + '</p>';
+      html += '<p><strong>CTA:</strong> ' + esc(c.cta) + '</p>';
+      html += '<p>&nbsp;</p>';
+    });
+  }
+  return html;
+}
+
+function copyText() {
+  if (!fd.nome) { showToast('Gere o briefing primeiro.'); return; }
+
+  function markSuccess() {
+    var btn = document.getElementById('btnCopy');
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copiado!';
+    showToast('Copiado! Cole no ClickUp com Ctrl+V.');
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> Copiar texto';
+    }, 3000);
+  }
+
+  var html = buildCopyHTML(fd);
+
+  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+    var blob = new Blob([html], { type: 'text/html' });
+    var item = new window.ClipboardItem({ 'text/html': blob });
+    navigator.clipboard.write([item]).then(markSuccess).catch(function() {
+      fallbackCopyHTML(html, markSuccess);
+    });
+  } else {
+    fallbackCopyHTML(html, markSuccess);
+  }
+}
+
+function fallbackCopyHTML(html, onSuccess) {
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  div.style.cssText = 'position:fixed;top:0;left:0;width:600px;opacity:0;pointer-events:none;';
+  document.body.appendChild(div);
+  var range = document.createRange();
+  range.selectNodeContents(div);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try {
+    var ok = document.execCommand('copy');
+    sel.removeAllRanges();
+    document.body.removeChild(div);
+    if (ok) onSuccess();
+    else showToast('Não foi possível copiar. Abra o formulário direto no navegador.');
+  } catch (e) {
+    sel.removeAllRanges();
+    document.body.removeChild(div);
+    showToast('Não foi possível copiar. Abra o formulário direto no navegador.');
+  }
+}
+
+function downloadPDF() {
+  if (!fd.nome) { showToast('Gere o briefing primeiro.'); return; }
+  if (!jsPDF && window.jspdf) jsPDF = window.jspdf.jsPDF;
+  if (!jsPDF) { showToast('Aguarde o carregamento e tente novamente.'); return; }
+  var d = fd;
+  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = 210, mg = 18, cW = W - mg * 2;
+  var y = 0;
+  var ACC = [196, 98, 45], DARK = [26, 23, 20], GRAY = [107, 101, 96], LBG = [249, 248, 245], BRD = [226, 221, 214];
+  var col2 = mg + cW / 2 + 4, hw = cW / 2 - 4;
+
+  function chk(h){ if (y + h > 272) { doc.addPage(); y = mg; } }
+  function secTitle(t) {
+    chk(14);
+    doc.setFillColor(LBG[0], LBG[1], LBG[2]); doc.rect(mg, y, cW, 8, 'F');
+    doc.setDrawColor(BRD[0], BRD[1], BRD[2]); doc.setLineWidth(0.3); doc.line(mg, y + 8, mg + cW, y + 8);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(ACC[0], ACC[1], ACC[2]); doc.setCharSpace(0.8);
+    doc.text(String(t).toUpperCase(), mg + 4, y + 5.5); doc.setCharSpace(0); y += 12;
+  }
+  function fldLbl(t, x, fy){ doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(GRAY[0], GRAY[1], GRAY[2]); doc.text(t, x, fy); }
+  function fldVal(t, x, fy, mw){ doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(DARK[0], DARK[1], DARK[2]); var ls = doc.splitTextToSize(t || '—', mw); doc.text(ls, x, fy + 4.5); return ls.length; }
+  function bodyTxt(t, x, fy, mw){ doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor(DARK[0], DARK[1], DARK[2]); var ls = doc.splitTextToSize(t, mw); chk(ls.length * 5 + 4); doc.text(ls, x, fy); return ls.length; }
+  function pTag(txt, x, ty){ var tw = doc.getTextWidth(txt) + 8; doc.setFillColor(245, 237, 231); doc.setDrawColor(196, 98, 45); doc.setLineWidth(0.3); doc.roundedRect(x, ty - 3.5, tw, 5.5, 1.5, 1.5, 'FD'); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(158, 74, 32); doc.text(txt, x + 4, ty + 0.5); return tw + 3; }
+
+  doc.setFillColor(ACC[0], ACC[1], ACC[2]); doc.rect(0, 0, W, 44, 'F');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(255, 255, 255); doc.setCharSpace(1.8);
+  doc.text('GESTÃO DE TRÁFEGO', mg, 13); doc.setCharSpace(0);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(21); doc.text('Solicitação de Criativo', mg, 25);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(255, 225, 205);
+  doc.text('Solicitado por ' + d.nome + '   ·   ' + d.dataGeracao, mg, 34);
+  y = 52;
+
+  secTitle('Identificação');
+  fldLbl('Solicitante', mg, y); fldVal(d.nome, mg, y, hw); y += 11;
+  fldLbl('Campanha / Projeto', mg, y); fldVal(d.campanha, mg, y, cW); y += 11;
+  if (d.cliente) { fldLbl('Cliente', mg, y); fldVal(d.cliente, mg, y, hw); }
+  if (d.produto) { fldLbl('Produto / Link', col2, y); fldVal(d.produto, col2, y, hw); }
+  if (d.cliente || d.produto) { y += 11; }
+
+  secTitle('Tipo de Criativo');
+  fldLbl('Formato', mg, y); fldLbl('Versões', col2, y);
+  fldVal(d.formatos.join(', ') + (d.dimensoes ? ' · ' + d.dimensoes : ''), mg, y, hw);
+  fldVal(d.versoes, col2, y, hw); y += 11;
+  fldLbl('Plataformas', mg, y); y += 5;
+  var tx = mg;
+  d.plataformas.forEach(function(p) {
+    var tw = doc.getTextWidth(p) + 12;
+    if (tx + tw > mg + cW) { y += 8; tx = mg; }
+    tx += pTag(p, tx, y);
+  });
+  y += 11;
+
+  secTitle('Briefing Criativo');
+  fldLbl('Objetivo do anúncio', mg, y); y += 5;
+  var ol = bodyTxt(d.objetivo, mg, y, cW); y += ol * 5 + 7;
+  chk(16); fldLbl('Público-alvo', mg, y); y += 5;
+  var pl = bodyTxt(d.publico, mg, y, cW); y += pl * 5 + 7;
+  chk(16); fldLbl('Mensagem principal / Oferta', mg, y); y += 5;
+  var ml = bodyTxt(d.mensagem, mg, y, cW); y += ml * 5 + 7;
+  if (d.cta) { chk(14); fldLbl('CTA', mg, y); fldVal(d.cta, mg, y, cW); y += 11; }
+
+  secTitle('Copy do Criativo');
+  ['Headline', 'Subheadline', 'Texto', 'CTA'].forEach(function(f) {
+    chk(16);
+    fldLbl(f, mg, y); y += 5;
+    doc.setDrawColor(BRD[0], BRD[1], BRD[2]); doc.setLineWidth(0.3);
+    doc.line(mg, y + 3, mg + cW, y + 3);
+    y += 10;
+  });
+
+  if (d.copysuggestions && d.copysuggestions.length) {
+    secTitle('Sugestões de Copy');
+    d.copysuggestions.forEach(function(copy) {
+      chk(16);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(DARK[0], DARK[1], DARK[2]);
+      doc.text(((copy.icon || '✨') + ' ' + copy.angulo).trim(), mg, y);
+      y += 6;
+      [['Headline', copy.headline], ['Subheadline', copy.subheadline], ['Texto', copy.texto], ['CTA', copy.cta]].forEach(function(entry) {
+        chk(16);
+        fldLbl(entry[0], mg, y); y += 5;
+        var lines = bodyTxt(entry[1] || '—', mg, y, cW);
+        y += lines * 5 + 5;
+      });
+      y += 2;
+    });
+  }
+
+  var extras = [['Referências visuais', d.referencias], ['Elementos obrigatórios', d.obrigatorios], ['O que evitar / Restrições', d.restricoes], ['Observações adicionais', d.obs]].filter(function(entry){ return entry[1]; });
+  if (extras.length) {
+    secTitle('Restrições e Observações');
+    extras.forEach(function(entry) {
+      chk(18); fldLbl(entry[0], mg, y); y += 5;
+      var n = bodyTxt(entry[1], mg, y, cW); y += n * 5 + 7;
+    });
+  }
+
+  var total = doc.getNumberOfPages();
+  for (var i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(BRD[0], BRD[1], BRD[2]); doc.setLineWidth(0.3); doc.line(mg, 284, W - mg, 284);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(GRAY[0], GRAY[1], GRAY[2]);
+    doc.text('Solicitação de Criativo · ' + d.campanha, mg, 289);
+    doc.text('Página ' + i + ' de ' + total, W - mg, 289, { align: 'right' });
+  }
+
+  var fname = 'criativo_' + d.campanha.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') + '_' + d.dataGeracao.replace(/\//g, '-') + '.pdf';
+  doc.save(fname);
+  showToast('PDF baixado com sucesso!');
+}
+
+function newForm() {
+  resetForm();
+  document.getElementById('resultCard').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  document.querySelectorAll('input[type="text"],input[type="password"],textarea,select').forEach(function(el){ el.value = ''; });
+  document.querySelectorAll('.pill,.tile').forEach(function(el){ el.classList.remove('active'); });
+  document.querySelectorAll('.field').forEach(function(el){ el.classList.remove('has-error'); });
+  selectedPlatforms = [];
+  selectedFormats = [];
+  selectedDimensoes = [];
+  selectedConceitos = [];
+  fd = {};
+  isGeneratingCopy = false;
+  closeAccessModal();
+  updateProgress();
+  renderCopySection(fd);
+}
+
+function buildAIPrompt(d, conceitos) {
+  var nomes = {
+    remarketing: 'Remarketing (urgência/escassez)',
+    nativo: 'Nativo/Notícia (formato editorial)',
+    promessa: 'Promessa + CTA (benefício direto)',
+    comparativo: 'Comparativo (antes/depois ou nós vs eles)'
+  };
+  var angulos = conceitos.map(function(c){ return nomes[c]; }).filter(Boolean);
+  var linhas = [
+    'Crie ' + angulos.length + ' sugestão(ões) de copy para tráfego pago, uma para cada ângulo abaixo.',
+    '',
+    'Briefing:',
+    'Cliente: ' + (d.cliente || d.campanha),
+    d.produto ? 'Produto: ' + d.produto : null,
+    'Objetivo: ' + d.objetivo,
+    'Público: ' + d.publico,
+    'Mensagem: ' + d.mensagem,
+    'CTA: ' + (d.cta || 'Saiba mais'),
+    '',
+    'Ângulos: ' + angulos.join(' | '),
+    '',
+    'Para cada ângulo, responda neste formato exato:',
+    '# [ÂNGULO]',
+    '**Headline:** (máx 8 palavras)',
+    '**Subheadline:** (máx 15 palavras)',
+    '**Texto:** (máx 25 palavras)',
+    '**CTA:** (máx 4 palavras)',
+    '',
+    'Em português do Brasil. Frases completas. Específico para o produto. NUNCA use travessões (—) ou hífens (-), substitua por vírgula quando necessário.'
+  ].filter(function(line){ return line !== null && line !== undefined; });
+  return linhas.join('\n');
+}
+
+function parseCopySuggestions(text) {
+  var blocks = String(text || '').split(/^#\s+/m).filter(Boolean);
+  return blocks.map(function(block) {
+    var lines = block.trim().split('\n');
+    var angulo = lines[0] ? lines[0].trim() : '';
+    function get(label) {
+      var line = lines.find(function(l){ return l.indexOf('**' + label + ':**') === 0; });
+      return line ? line.replace('**' + label + ':**', '').trim() : '';
+    }
+    return {
+      angulo: angulo,
+      headline: get('Headline'),
+      subheadline: get('Subheadline'),
+      texto: get('Texto'),
+      cta: get('CTA')
+    };
+  }).filter(function(item){
+    return item.angulo && (item.headline || item.subheadline || item.texto || item.cta);
+  });
+}
+
+function getStoredAccessCode() {
+  try {
+    return window.sessionStorage.getItem(ACCESS_CODE_KEY) || '';
+  } catch (e) {
+    return '';
+  }
+}
+
+function storeAccessCode(code) {
+  try {
+    window.sessionStorage.setItem(ACCESS_CODE_KEY, code);
+  } catch (e) {}
+}
+
+function clearStoredAccessCode() {
+  try {
+    window.sessionStorage.removeItem(ACCESS_CODE_KEY);
+  } catch (e) {}
+}
+
+function setAccessModalError(message) {
+  document.getElementById('accessModalError').textContent = message || '';
+}
+
+function openAccessModal(message) {
+  var modal = document.getElementById('accessModal');
+  var input = document.getElementById('accessCodeInput');
+  modal.classList.add('show');
+  setAccessModalError(message || '');
+  input.value = '';
+  setTimeout(function(){ input.focus(); }, 30);
+}
+
+function closeAccessModal() {
+  document.getElementById('accessModal').classList.remove('show');
+  setAccessModalError('');
+  document.getElementById('accessCodeInput').value = '';
+}
+
+function setGenerateButtonLoading(loading) {
+  var btn = document.getElementById('btnClaude');
+  if (loading) {
+    btn.disabled = true;
+    btn.classList.add('is-loading');
+    btn.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span> ⏳ Gerando copy...';
+  } else {
+    btn.disabled = false;
+    btn.classList.remove('is-loading');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2C4.24 2 2 4.24 2 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm.5 7.5h-1v-4h1v4zm0-5h-1V3.5h1V4.5z" fill="currentColor"/></svg> ✨ Gerar copy com IA';
+  }
+}
+
+async function generateCopyWithIA(accessCode) {
+  if (isGeneratingCopy) return;
+  if (!fd.nome) { showToast('Gere o briefing primeiro.'); return; }
+  if (!selectedConceitos.length) { showToast('Selecione ao menos um conceito de copy no briefing.'); return; }
+  if (!accessCode) {
+    openAccessModal('');
+    return;
+  }
+
+  var previousSuggestions = (fd.copysuggestions || []).slice();
+  var shouldRestore = true;
+  isGeneratingCopy = true;
+  setGenerateButtonLoading(true);
+  renderCopyLoading();
+
+  try {
+    var response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_code: accessCode,
+        prompt: buildAIPrompt(fd, selectedConceitos)
+      })
+    });
+
+    var payload = {};
+    try { payload = await response.json(); } catch (e) {}
+
+    if (response.status === 401) {
+      clearStoredAccessCode();
+      openAccessModal('Código inválido. Tente novamente.');
+      return;
+    }
+
+    if (!response.ok) {
+      if (response.status >= 500) showToast('Erro ao gerar copy. Tente novamente em alguns instantes.');
+      else showToast(payload.error || 'Erro ao gerar copy. Tente novamente.');
+      return;
+    }
+
+    var parsed = parseCopySuggestions(payload.result || '').map(enrichCopySuggestion);
+    if (!parsed.length) {
+      showToast('Não foi possível interpretar a resposta da IA. Tente novamente.');
+      return;
+    }
+
+    fd.copysuggestions = parsed;
+    storeAccessCode(accessCode);
+    shouldRestore = false;
+    showToast('Sugestões de copy geradas com sucesso!');
+  } catch (error) {
+    showToast('Erro de conexão. Verifique sua internet e tente novamente.');
+  } finally {
+    isGeneratingCopy = false;
+    if (shouldRestore) {
+      fd.copysuggestions = previousSuggestions;
+    }
+    renderCopySection(fd);
+    setGenerateButtonLoading(false);
+  }
+}
+
+function handleGenerateCopyClick() {
+  if (!fd.nome) { showToast('Gere o briefing primeiro.'); return; }
+  if (!selectedConceitos.length) { showToast('Selecione ao menos um conceito de copy no briefing.'); return; }
+  var storedCode = getStoredAccessCode();
+  if (!storedCode) {
+    openAccessModal('');
+    return;
+  }
+  generateCopyWithIA(storedCode);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.jspdf) jsPDF = window.jspdf.jsPDF;
+
+  document.querySelectorAll('#pg-formato .pill').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      var txt = el.textContent.trim();
+      if (el.classList.contains('active')) selectedFormats.push(txt);
+      else selectedFormats = selectedFormats.filter(function(f){ return f !== txt; });
+      if (selectedFormats.length > 0 || document.getElementById('f-formato-outro').value.trim()) clearError('wrap-formato');
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('#pg-conceitos .pill').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      var conceito = el.getAttribute('data-conceito');
+      if (el.classList.contains('active')) selectedConceitos.push(conceito);
+      else selectedConceitos = selectedConceitos.filter(function(c){ return c !== conceito; });
+      if (fd && fd.nome) fd.conceitos = selectedConceitos.slice();
+    });
+  });
+
+  document.querySelectorAll('#pg-dimensoes .pill').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      var txt = el.textContent.trim();
+      if (el.classList.contains('active')) selectedDimensoes.push(txt);
+      else selectedDimensoes = selectedDimensoes.filter(function(d){ return d !== txt; });
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('#tg-plataforma .tile').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      var txt = el.textContent.replace('✓', '').trim();
+      if (el.classList.contains('active')) selectedPlatforms.push(txt);
+      else selectedPlatforms = selectedPlatforms.filter(function(p){ return p !== txt; });
+      if (selectedPlatforms.length > 0 || document.getElementById('f-plataforma-outro').value.trim()) clearError('wrap-plataforma');
+      updateProgress();
+    });
+  });
+
+  document.getElementById('btnReset').addEventListener('click', resetForm);
+  document.getElementById('btnSubmit').addEventListener('click', submitForm);
+  document.getElementById('btnDownload').addEventListener('click', downloadPDF);
+  document.getElementById('btnCopy').addEventListener('click', copyText);
+  document.getElementById('btnClaude').addEventListener('click', handleGenerateCopyClick);
+  document.getElementById('btnNew').addEventListener('click', newForm);
+
+  document.querySelectorAll('input, textarea, select').forEach(function(el) {
+    el.addEventListener('input', function() {
+      updateProgress();
+      var wrap = el.closest('.field');
+      if (wrap && wrap.classList.contains('has-error') && el.value.trim()) wrap.classList.remove('has-error');
+    });
+  });
+
+  var modal = document.getElementById('accessModal');
+  document.getElementById('accessModalSubmit').addEventListener('click', function() {
+    var code = document.getElementById('accessCodeInput').value.trim();
+    if (!code) {
+      setAccessModalError('Insira o código de acesso.');
+      return;
+    }
+    closeAccessModal();
+    generateCopyWithIA(code);
+  });
+
+  document.getElementById('accessCodeInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      document.getElementById('accessModalSubmit').click();
+    }
+  });
+
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) closeAccessModal();
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && modal.classList.contains('show') && !isGeneratingCopy) closeAccessModal();
+  });
+
+  updateProgress();
+  renderCopySection(fd);
+});
+</script>
+</body>
+</html>

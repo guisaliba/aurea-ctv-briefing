@@ -82,7 +82,7 @@
     gap: 0.75rem;
   }
   .brand {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -454,7 +454,20 @@
     .topbar { flex-direction: column; align-items: flex-start; }
     .field-row, .tile-grid, .r-row { grid-template-columns: 1fr; }
     .submit-area { flex-direction: column; align-items: stretch; }
-    .btn-group, .result-footer { flex-direction: column; }
+    .btn-group { flex-direction: column; }
+    .result-footer {
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .result-footer-note {
+      flex: 1 1 100%;
+      min-width: 100%;
+    }
+    .result-footer .btn {
+      flex: 1 1 calc(50% - 4px);
+      justify-content: center;
+    }
+    .result-footer #btnNew { flex-basis: 100%; }
     .header { padding: 1.2rem; }
     .header-title { font-size: 1.65rem; }
   }
@@ -464,7 +477,7 @@
 <div class="page">
 
   <div class="topbar">
-    <span class="brand">© Aurea Labs</span>
+    <span class="brand">Aurea Labs ©</span>
     <div class="theme-switcher" role="group" aria-label="Selecionar tema">
       <button class="theme-btn" id="themeLight" type="button" aria-pressed="false" aria-label="Tema claro" title="Tema claro">
         <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -671,18 +684,14 @@
       </div>
     </div>
     <div class="result-footer">
-      <span class="result-footer-note">Baixe o PDF, copie o texto ou gere sugestões de copy com IA.</span>
-      <button class="btn btn-dl" id="btnDownload">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M3.5 6.5 7 10l3.5-3.5M1.5 12.5h11" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Baixar PDF
-      </button>
+      <span class="result-footer-note">Copie o texto ou gere sugestões de copy.</span>
       <button class="btn btn-copy" id="btnCopy">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         Copiar texto
       </button>
       <button class="btn btn-claude" id="btnClaude">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2C4.24 2 2 4.24 2 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm.5 7.5h-1v-4h1v4zm0-5h-1V3.5h1V4.5z" fill="currentColor"/></svg>
-        ✨ Gerar copy com IA
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.8 9.3 4.7 12.2 6 9.3 7.3 8 10.2 6.7 7.3 3.8 6 6.7 4.7 8 1.8Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 9.4 13 10.7 14.3 11.3 13 11.9 12.4 13.2 11.8 11.9 10.5 11.3 11.8 10.7 12.4 9.4Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Gerar copy
       </button>
       <button class="btn btn-ghost" id="btnNew">Nova solicitação</button>
     </div>
@@ -1325,7 +1334,7 @@ function setGenerateButtonLoading(loading) {
   } else {
     btn.disabled = false;
     btn.classList.remove('is-loading');
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2C4.24 2 2 4.24 2 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm.5 7.5h-1v-4h1v4zm0-5h-1V3.5h1V4.5z" fill="currentColor"/></svg> ✨ Gerar copy com IA';
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.2 9.4 6.6 13.8 8 9.4 9.4 8 13.8 6.6 9.4 2.2 8 6.6 6.6 8 2.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M12.1 2.2 12.6 3.4 13.8 3.9 12.6 4.4 12.1 5.6 11.6 4.4 10.4 3.9 11.6 3.4 12.1 2.2Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg> Gerar copy';
   }
 }
 
@@ -1459,7 +1468,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('btnReset').addEventListener('click', resetForm);
   document.getElementById('btnSubmit').addEventListener('click', submitForm);
-  document.getElementById('btnDownload').addEventListener('click', downloadPDF);
   document.getElementById('btnCopy').addEventListener('click', copyText);
   document.getElementById('btnClaude').addEventListener('click', handleGenerateCopyClick);
   document.getElementById('btnNew').addEventListener('click', newForm);

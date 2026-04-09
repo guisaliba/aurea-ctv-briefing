@@ -103,15 +103,40 @@
     color: var(--text2);
     font-size: 12px;
     font-weight: 600;
-    padding: 6px 12px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     border-radius: var(--radius-pill);
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .theme-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .theme-btn:hover { color: var(--text); background: var(--accent-light); }
   .theme-btn.active {
     background: var(--accent);
     color: var(--accent-contrast);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    white-space: nowrap;
   }
 
   .header {
@@ -440,8 +465,19 @@
   <div class="topbar">
     <span class="brand">© Aurea Labs</span>
     <div class="theme-switcher" role="group" aria-label="Selecionar tema">
-      <button class="theme-btn" id="themeLight" type="button" aria-pressed="false">Light</button>
-      <button class="theme-btn" id="themeDark" type="button" aria-pressed="false">Dark</button>
+      <button class="theme-btn" id="themeLight" type="button" aria-pressed="false" aria-label="Tema claro" title="Tema claro">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="3"></circle>
+          <path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M12.6 3.4l-1.1 1.1M4.5 11.5l-1.1 1.1"></path>
+        </svg>
+        <span class="sr-only">Tema claro</span>
+      </button>
+      <button class="theme-btn" id="themeDark" type="button" aria-pressed="false" aria-label="Tema escuro" title="Tema escuro">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M10.9 1.7a6.3 6.3 0 1 0 3.4 9.7 6.2 6.2 0 0 1-7.8-7.8 6.2 6.2 0 0 0 4.4-1.9z"></path>
+        </svg>
+        <span class="sr-only">Tema escuro</span>
+      </button>
     </div>
   </div>
 

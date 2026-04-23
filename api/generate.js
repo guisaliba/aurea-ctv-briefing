@@ -27,13 +27,13 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Dados do formulário muito longos.' });
   }
 
-  const prompt =
-    META_ADS_MATRIX +
-    '\n\n---\n\n' +
+  const userMessage =
     'Dados do formulário (use como base, nesta ordem):\n\n' +
-    formContext.trim();
+    '<form_data>\n' +
+    formContext.trim() +
+    '\n</form_data>';
 
-  if (prompt.length > MAX_COMBINED_PROMPT) {
+  if (userMessage.length > MAX_COMBINED_PROMPT) {
     return res.status(400).json({ error: 'Prompt acima do limite do servidor.' });
   }
 
@@ -53,7 +53,8 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 4096,
-        messages: [{ role: 'user', content: prompt }]
+        system: META_ADS_MATRIX,
+        messages: [{ role: 'user', content: userMessage }]
       })
     });
 

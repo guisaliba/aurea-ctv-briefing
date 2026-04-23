@@ -71,7 +71,9 @@ Texto principal: (break line)
 
 CTA/Botão: (break line)
 
-Repeat this block exactly 5 times (Variation 1 through 5), one psychological framework per primary text as specified above. Use the field labels "Variation:", "Headline:", "Subheadline:", "Texto principal:", and "CTA/Botão:" exactly as shown.`;
+Repeat this block exactly 5 times (Variation 1 through 5), one psychological framework per primary text as specified above.
+
+CRITICAL (machine parse): Start each of the five blocks with a line in this exact form so downstream tooling can parse: use these exact line prefixes, matching the left side exactly as written (case-sensitive, including punctuation and any Portuguese words/diacritics), followed by a colon and optional text on the same line. The actual ad copy in each field must be in Brazilian Portuguese. Required prefixes: "Variation:", "Headline:", "Subheadline:", "Texto principal:", "CTA/Botão:". Do not translate, rename, or normalize these labels; for example, do not use "Variação" or "Título" in place of the required prefixes.`;
 
 const MAX_FORM_CONTEXT = 40000;
 const MAX_COMBINED_PROMPT = 50000;

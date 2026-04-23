@@ -52,7 +52,8 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 4096,
+        // Five structured blocks; 4k was tight and can truncate (stop_reason max_tokens) → unparseable output.
+        max_tokens: 16384,
         system: META_ADS_MATRIX,
         messages: [{ role: 'user', content: userMessage }]
       })
@@ -65,6 +66,22 @@ module.exports = async function handler(req, res) {
     }
 
     const data = await response.json();
+    const stopReason = data && data.stop_reason;
+    if (stopReason === 'max_tokens') {
+      const usage = data.usage || {};
+      console.error('Anthropic response hit max_tokens; copy may be truncated', {
+        input_tokens: usage.input_tokens,
+        output_tokens: usage.output_tokens
+      });
+    } else if (stopReason && stopReason !== 'end_turn') {
+      // Avoid logging every normal completion; only unusual stop reasons
+      const usage = data.usage || {};
+      console.info('Anthropic generate', {
+        stop_reason: stopReason,
+        input_tokens: usage.input_tokens,
+        output_tokens: usage.output_tokens
+      });
+    }
     const text = Array.isArray(data.content)
       ? data.content
           .filter((block) => block && block.type === 'text')
@@ -72,7 +89,7 @@ module.exports = async function handler(req, res) {
           .join('\n')
       : '';
 
-    return res.status(200).json({ result: text });
+    return res.status(200).json({ result: text, meta: { stop_reason: data.stop_reason } });
   } catch (error) {
     console.error('Server error:', error);
     return res.status(500).json({ error: 'Erro interno do servidor.' });

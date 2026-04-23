@@ -1142,18 +1142,75 @@ function parseCopySuggestions(text) {
   var cur = null;
   var currentKey = null;
 
-  function isKeyLine(line) {
-    return /^\s*(variation|headline|subheadline|texto\s+principal|cta\s*\/\s*bot[aã]o|cta)\s*:/i.test(line);
+  /** Strips `**` only for key classification; do not use on the value. */
+  function normalizeKey(s) {
+    return String(s || '')
+      .replace(/\*\*/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
   }
 
-  lines.forEach(function(line) {
-    var mVar = line.match(/^\s*variation\s*:\s*(.*)$/i);
-    if (mVar) {
+  /**
+   * Splits "Key: value" or `**Key:** value` (bold around key). Value keeps `**` for ad copy
+   * (e.g. `Headline: **Oferta**` uses a plain first colon; value stays intact).
+   */
+  function splitKeyValue(line) {
+    var s = String(line);
+    var mBoldKey = s.match(/^\s*\*\*([^*]+?)\:\*\*\s*(.*)$/);
+    if (mBoldKey) {
+      return { keyRaw: mBoldKey[1], value: mBoldKey[2].trim() };
+    }
+    var i = s.indexOf(':');
+    if (i === -1) return null;
+    return { keyRaw: s.slice(0, i), value: s.slice(i + 1).trim() };
+  }
+
+  function isKeyLine(line) {
+    var kv = splitKeyValue(line);
+    if (!kv) return false;
+    var k = normalizeKey(kv.keyRaw);
+    if (
+      k === 'variation' ||
+      /^varia(ção|cao) (\d+)$/.test(k) ||
+      /^varia(ção|cao)$/.test(k) ||
+      /^variation \d+$/.test(k) ||
+      /^varia(ção|cao) \d+$/.test(k) ||
+      k === 'headline' ||
+      k === 'título' ||
+      k === 'titulo' ||
+      k === 'subheadline' ||
+      k === 'descrição' ||
+      k === 'descricao' ||
+      k === 'texto principal' ||
+      k === 'cta' ||
+      k === 'botão' ||
+      k === 'botao' ||
+      k === 'cta/botão' ||
+      k === 'cta/botao' ||
+      k === 'cta / botão' ||
+      k === 'cta / botao'
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function dispatchKeyValue(kv) {
+    if (!kv) return;
+    var k = normalizeKey(kv.keyRaw);
+    if (
+      k === 'variation' ||
+      /^varia(ção|cao) (\d+)$/.test(k) ||
+      /^varia(ção|cao)$/.test(k) ||
+      /^variation \d+$/.test(k) ||
+      /^varia(ção|cao) \d+$/.test(k)
+    ) {
       if (cur && (cur.headline || cur.subheadline || cur.texto || cur.cta)) {
         blocks.push(cur);
       }
       cur = {
-        variationLabel: (mVar[1] || '').trim() || '',
+        variationLabel: (kv.value || '').trim() || '',
         headline: '',
         subheadline: '',
         texto: '',
@@ -1163,32 +1220,57 @@ function parseCopySuggestions(text) {
       return;
     }
     if (!cur) return;
-
-    var h = line.match(/^\s*headline\s*:\s*(.*)$/i);
-    if (h) {
-      cur.headline = (h[1] || '').trim();
+    if (k === 'headline' || k === 'título' || k === 'titulo') {
+      cur.headline = (kv.value || '').trim();
       currentKey = 'headline';
       return;
     }
-    var sh = line.match(/^\s*subheadline\s*:\s*(.*)$/i);
-    if (sh) {
-      cur.subheadline = (sh[1] || '').trim();
+    if (k === 'subheadline' || k === 'descrição' || k === 'descricao') {
+      cur.subheadline = (kv.value || '').trim();
       currentKey = 'subheadline';
       return;
     }
-    var tp = line.match(/^\s*texto\s+principal\s*:\s*(.*)$/i);
-    if (tp) {
-      cur.texto = (tp[1] || '').trim();
+    if (k === 'texto principal') {
+      cur.texto = (kv.value || '').trim();
       currentKey = 'texto';
       return;
     }
-    var ctaM = line.match(/^\s*cta\s*\/\s*bot[aã]o\s*:\s*(.*)$/i) || line.match(/^\s*cta\s*:\s*(.*)$/i);
-    if (ctaM) {
-      cur.cta = (ctaM[1] || '').trim();
+    if (k === 'cta' || k === 'botão' || k === 'botao' || k === 'cta/botão' || k === 'cta/botao' || k === 'cta / botão' || k === 'cta / botao') {
+      cur.cta = (kv.value || '').trim();
       currentKey = 'cta';
       return;
     }
+  }
 
+  lines.forEach(function(line) {
+    var kv = splitKeyValue(line);
+    if (kv) {
+      var k = normalizeKey(kv.keyRaw);
+      if (
+        k === 'variation' ||
+        /^varia(ção|cao) (\d+)$/.test(k) ||
+        /^varia(ção|cao)$/.test(k) ||
+        /^variation \d+$/.test(k) ||
+        /^varia(ção|cao) \d+$/.test(k) ||
+        k === 'headline' ||
+        k === 'título' ||
+        k === 'titulo' ||
+        k === 'subheadline' ||
+        k === 'descrição' ||
+        k === 'descricao' ||
+        k === 'texto principal' ||
+        k === 'cta' ||
+        k === 'botão' ||
+        k === 'botao' ||
+        k === 'cta/botão' ||
+        k === 'cta/botao' ||
+        k === 'cta / botão' ||
+        k === 'cta / botao'
+      ) {
+        dispatchKeyValue(kv);
+        return;
+      }
+    }
     if (currentKey && line.trim() && !isKeyLine(line)) {
       cur[currentKey] = (cur[currentKey] + ' ' + line.trim()).trim();
     }
@@ -1298,9 +1380,14 @@ async function generateCopyWithIA(accessCode) {
       return;
     }
 
-    var parsed = parseCopySuggestions(payload.result || '');
+    var raw = payload.result || '';
+    var parsed = parseCopySuggestions(raw);
     if (!parsed.length) {
-      showToast('Não foi possível interpretar a resposta da IA. Tente novamente.');
+      if (payload.meta && payload.meta.stop_reason === 'max_tokens') {
+        showToast('A resposta da IA foi cortada (limite de tamanho). Tente de novo; se persistir, avise o suporte.');
+      } else {
+        showToast('Não foi possível interpretar a resposta da IA. Tente novamente.');
+      }
       return;
     }
 

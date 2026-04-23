@@ -1,3 +1,9 @@
+const {
+  META_ADS_MATRIX,
+  MAX_FORM_CONTEXT,
+  MAX_COMBINED_PROMPT
+} = require('./prompt-matrix.js');
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -9,14 +15,26 @@ module.exports = async function handler(req, res) {
     : (req.body || {});
 
   const accessCode = body.access_code;
-  const prompt = body.prompt;
-
   if (!accessCode || accessCode !== process.env.ACCESS_CODE) {
     return res.status(401).json({ error: 'Código de acesso inválido.' });
   }
 
-  if (!prompt || typeof prompt !== 'string' || prompt.length > 20000) {
-    return res.status(400).json({ error: 'Prompt inválido.' });
+  const formContext = body.form_context;
+  if (typeof formContext !== 'string' || !formContext.trim()) {
+    return res.status(400).json({ error: 'Dados do formulário inválidos.' });
+  }
+  if (formContext.length > MAX_FORM_CONTEXT) {
+    return res.status(400).json({ error: 'Dados do formulário muito longos.' });
+  }
+
+  const prompt =
+    META_ADS_MATRIX +
+    '\n\n---\n\n' +
+    'Dados do formulário (use como base, nesta ordem):\n\n' +
+    formContext.trim();
+
+  if (prompt.length > MAX_COMBINED_PROMPT) {
+    return res.status(400).json({ error: 'Prompt acima do limite do servidor.' });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {

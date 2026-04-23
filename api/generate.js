@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: 'Código de acesso inválido.' });
   }
 
-  if (!prompt || typeof prompt !== 'string' || prompt.length > 5000) {
+  if (!prompt || typeof prompt !== 'string' || prompt.length > 20000) {
     return res.status(400).json({ error: 'Prompt inválido.' });
   }
 
@@ -34,7 +34,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
+        max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }]
       })
     });

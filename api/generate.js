@@ -66,18 +66,21 @@ module.exports = async function handler(req, res) {
     }
 
     const data = await response.json();
-    if (data && data.stop_reason) {
+    const stopReason = data && data.stop_reason;
+    if (stopReason === 'max_tokens') {
       const usage = data.usage || {};
-      console.info('Anthropic generate', {
-        stop_reason: data.stop_reason,
+      console.error('Anthropic response hit max_tokens; copy may be truncated', {
         input_tokens: usage.input_tokens,
         output_tokens: usage.output_tokens
       });
-    }
-    if (data && data.stop_reason === 'max_tokens') {
-      console.error(
-        'Anthropic response hit max_tokens; copy may be truncated and client parsing can fail. Consider raising max_tokens or tightening output instructions.'
-      );
+    } else if (stopReason && stopReason !== 'end_turn') {
+      // Avoid logging every normal completion; only unusual stop reasons
+      const usage = data.usage || {};
+      console.info('Anthropic generate', {
+        stop_reason: stopReason,
+        input_tokens: usage.input_tokens,
+        output_tokens: usage.output_tokens
+      });
     }
     const text = Array.isArray(data.content)
       ? data.content

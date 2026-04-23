@@ -73,7 +73,7 @@ CTA/Botão: (break line)
 
 Repeat this block exactly 5 times (Variation 1 through 5), one psychological framework per primary text as specified above.
 
-CRITICAL (machine parse): Start each of the five blocks with a line in this exact form so downstream tooling can parse: the label word in English, then a colon, then optional text on the same line. Use these exact line prefixes (left side must match), while the actual ad copy in each field is in Brazilian Portuguese: "Variation:", "Headline:", "Subheadline:", "Texto principal:", "CTA/Botão:". Do not use Portuguese labels (such as "Variação" or "Título") in place of these English keys.`;
+CRITICAL (machine parse): Start each of the five blocks with a line in this exact form so downstream tooling can parse: use these exact line prefixes, matching the left side exactly as written (case-sensitive, including punctuation and any Portuguese words/diacritics), followed by a colon and optional text on the same line. The actual ad copy in each field must be in Brazilian Portuguese. Required prefixes: "Variation:", "Headline:", "Subheadline:", "Texto principal:", "CTA/Botão:". Do not translate, rename, or normalize these labels; for example, do not use "Variação" or "Título" in place of the required prefixes.`;
 
 const MAX_FORM_CONTEXT = 40000;
 const MAX_COMBINED_PROMPT = 50000;

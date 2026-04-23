@@ -1142,12 +1142,22 @@ function parseCopySuggestions(text) {
   var cur = null;
   var currentKey = null;
 
+  /** Strips ** so labels like `**Headline:**` still match. */
+  function stripBoldMarkers(s) {
+    return String(s || '').replace(/\*\*/g, '');
+  }
+
   function isKeyLine(line) {
-    return /^\s*(variation|headline|subheadline|texto\s+principal|cta\s*\/\s*bot[aã]o|cta)\s*:/i.test(line);
+    var s = stripBoldMarkers(line);
+    return /^\s*(variation(\s+\d+)?|varia[çc][aã]o(\s+\d+)?|headline|t[ií]tulo|subheadline|descri[çc][aã]o|texto\s+principal|cta(\s*\/\s*bot[aã]o)?)\s*:/i.test(
+      s
+    );
   }
 
   lines.forEach(function(line) {
-    var mVar = line.match(/^\s*variation\s*:\s*(.*)$/i);
+    var s = stripBoldMarkers(line);
+    var mVar = s.match(/^\s*variation(?:\s+\d+)?\s*:\s*(.*)$/i) ||
+      s.match(/^\s*varia[çc][aã]o(?:\s+\d+)?\s*:\s*(.*)$/i);
     if (mVar) {
       if (cur && (cur.headline || cur.subheadline || cur.texto || cur.cta)) {
         blocks.push(cur);
@@ -1164,25 +1174,26 @@ function parseCopySuggestions(text) {
     }
     if (!cur) return;
 
-    var h = line.match(/^\s*headline\s*:\s*(.*)$/i);
+    var h = s.match(/^\s*headline\s*:\s*(.*)$/i) || s.match(/^\s*t[ií]tulo\s*:\s*(.*)$/i);
     if (h) {
       cur.headline = (h[1] || '').trim();
       currentKey = 'headline';
       return;
     }
-    var sh = line.match(/^\s*subheadline\s*:\s*(.*)$/i);
+    var sh = s.match(/^\s*subheadline\s*:\s*(.*)$/i) || s.match(/^\s*descri[çc][aã]o\s*:\s*(.*)$/i);
     if (sh) {
       cur.subheadline = (sh[1] || '').trim();
       currentKey = 'subheadline';
       return;
     }
-    var tp = line.match(/^\s*texto\s+principal\s*:\s*(.*)$/i);
+    var tp = s.match(/^\s*texto\s+principal\s*:\s*(.*)$/i);
     if (tp) {
       cur.texto = (tp[1] || '').trim();
       currentKey = 'texto';
       return;
     }
-    var ctaM = line.match(/^\s*cta\s*\/\s*bot[aã]o\s*:\s*(.*)$/i) || line.match(/^\s*cta\s*:\s*(.*)$/i);
+    var ctaM = s.match(/^\s*cta\s*\/\s*bot[aã]o\s*:\s*(.*)$/i) || s.match(/^\s*cta\s*:\s*(.*)$/i) ||
+      s.match(/^\s*bot[aã]o\s*:\s*(.*)$/i);
     if (ctaM) {
       cur.cta = (ctaM[1] || '').trim();
       currentKey = 'cta';
@@ -1298,9 +1309,14 @@ async function generateCopyWithIA(accessCode) {
       return;
     }
 
-    var parsed = parseCopySuggestions(payload.result || '');
+    var raw = payload.result || '';
+    var parsed = parseCopySuggestions(raw);
     if (!parsed.length) {
-      showToast('Não foi possível interpretar a resposta da IA. Tente novamente.');
+      if (payload.meta && payload.meta.stop_reason === 'max_tokens') {
+        showToast('A resposta da IA foi cortada (limite de tamanho). Tente de novo; se persistir, avise o suporte.');
+      } else {
+        showToast('Não foi possível interpretar a resposta da IA. Tente novamente.');
+      }
       return;
     }
 

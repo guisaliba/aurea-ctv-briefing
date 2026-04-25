@@ -6,378 +6,7 @@
 <title>Aurea Labs | Solicitação de Criativo</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    color-scheme: light;
-    --bg: #fafaf9;
-    --surface: #ffffff;
-    --surface2: #f5f5f4;
-    --border: #e7e5e4;
-    --text: #1c1917;
-    --text2: #57534e;
-    --text3: #78716c;
-    --accent: #1c1917;
-    --accent-contrast: #fafaf9;
-    --success: #15803d;
-    --danger: #b91c1c;
-    --radius: 8px;
-    --radius-sm: 6px;
-    --overlay: rgba(28, 25, 23, 0.35);
-  }
-
-  [data-theme="dark"] {
-    color-scheme: dark;
-    --bg: #0c0a09;
-    --surface: #1c1917;
-    --surface2: #292524;
-    --border: #44403c;
-    --text: #fafaf9;
-    --text2: #a8a29e;
-    --text3: #78716c;
-    --accent: #fafaf9;
-    --accent-contrast: #1c1917;
-    --success: #4ade80;
-    --danger: #fca5a5;
-    --overlay: rgba(0, 0, 0, 0.5);
-  }
-
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Geist', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 1.25rem 1rem 3rem;
-    font-size: 15px;
-    line-height: 1.55;
-    letter-spacing: -0.01em;
-    transition: background-color 0.2s ease, color 0.2s ease;
-  }
-
-  .page { max-width: 640px; margin: 0 auto; }
-
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.1rem;
-    gap: 0.75rem;
-  }
-  .brand {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text2);
-  }
-  .theme-switcher {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-  }
-  .theme-btn {
-    border: 0;
-    background: transparent;
-    color: var(--text3);
-    font-size: 12px;
-    font-weight: 500;
-    width: 28px;
-    height: 28px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: color 0.15s ease, background 0.15s ease;
-  }
-  .theme-btn svg {
-    width: 13px;
-    height: 13px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.25;
-    opacity: 0.88;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .theme-btn:hover { color: var(--text); background: var(--surface2); }
-  .theme-btn.active { color: var(--text); background: var(--surface2); }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-    white-space: nowrap;
-  }
-
-  .header {
-    margin-bottom: 1.5rem;
-    padding: 0 0 0.25rem;
-    border: 0;
-    background: transparent;
-  }
-  .header-eyebrow { display: none; }
-  .header-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.25;
-    margin-bottom: 0.35rem;
-    letter-spacing: -0.02em;
-  }
-  .header-sub { font-size: 13px; color: var(--text2); }
-  .progress-wrap { margin-top: 0.85rem; display: flex; align-items: center; gap: 10px; }
-  .progress-bar-outer { flex: 1; height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
-  .progress-bar-inner { height: 100%; background: var(--text3); border-radius: 1px; transition: width 0.35s ease; width: 0%; }
-  .progress-label { font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 76px; text-align: right; }
-
-  .section {
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-    padding: 1.15rem 0;
-    margin-bottom: 0;
-    animation: none;
-  }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .section-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 1rem; padding-bottom: 0; border-bottom: 0; }
-  .section-num {
-    width: auto; height: auto; border-radius: 0;
-    background: transparent; color: var(--text3);
-    border: 0;
-    font-size: 12px; font-weight: 500;
-    display: inline;
-  }
-  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-transform: none; color: var(--text2); }
-
-  .field { margin-bottom: 1.1rem; }
-  .field:last-child { margin-bottom: 0; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
-  label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
-  .req { color: var(--text2); margin-left: 2px; }
-  .hint { font-size: 12px; color: var(--text3); margin-top: 5px; line-height: 1.5; }
-  .err-msg { font-size: 12px; color: var(--danger); margin-top: 5px; display: none; }
-
-  input[type="text"], input[type="password"], select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--text);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    outline: none;
-    transition: border-color .2s, box-shadow .2s, background-color .2s;
-    -webkit-appearance: none;
-  }
-  input[type="text"]:focus, input[type="password"]:focus, select:focus, textarea:focus {
-    border-color: var(--text3);
-    background: var(--surface);
-    box-shadow: none;
-    outline: none;
-  }
-  input::placeholder, textarea::placeholder { color: var(--text3); }
-  textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
-  select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2388847d' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 36px;
-  }
-
-  .field.has-error input, .field.has-error textarea, .field.has-error select {
-    border-color: var(--danger) !important;
-    background: var(--surface) !important;
-  }
-  .field.has-error select[multiple] { outline: 2px solid var(--danger); outline-offset: 1px; }
-  .field.has-error label { color: var(--danger); }
-  .field.has-error .err-msg { display: block; }
-
-  select[multiple] { min-height: 120px; padding: 8px 10px; }
-
-  .submit-area { display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.25rem; }
-  .status-msg { font-size: 13px; color: var(--text3); flex: 1; }
-  .btn-group { display: flex; gap: 8px; }
-  .btn {
-    padding: 8px 0;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-    border-radius: 0;
-    cursor: pointer;
-    transition: color .15s, opacity .15s;
-    border: 0;
-    border-bottom: 1px solid transparent;
-    background: transparent;
-    white-space: nowrap;
-  }
-  .btn-ghost { color: var(--text2); border-bottom-color: var(--border); }
-  .btn-ghost:hover { color: var(--text); border-bottom-color: var(--text); }
-  .btn-primary { color: var(--text); border-bottom-color: var(--text); font-weight: 600; }
-  .btn-primary:hover { opacity: 0.75; }
-  .btn-dl, .btn-copy, .btn-claude {
-    color: var(--text2);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    border-bottom-color: var(--border);
-  }
-  .btn-dl:hover, .btn-copy:hover, .btn-claude:hover { color: var(--text); border-bottom-color: var(--text); }
-  .btn-copy.copied { color: var(--success); border-bottom-color: var(--success); }
-  .btn[disabled], .btn.is-loading { opacity: 0.7; pointer-events: none; }
-
-  .btn-spinner {
-    width: 14px; height: 14px; border-radius: 50%;
-    border: 2px solid currentColor; border-right-color: transparent;
-    animation: spin 0.8s linear infinite; flex-shrink: 0;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 12px 18px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all .25s ease;
-    pointer-events: none;
-    z-index: 999;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  .result-card {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-top: 1.25rem;
-    overflow: hidden;
-  }
-  .result-card.show { display: block; animation: fadeUp 0.25s ease; }
-  .result-header {
-    background: var(--surface2);
-    padding: 1.1rem 1.25rem;
-    color: var(--text);
-    border-bottom: 1px solid var(--border);
-  }
-  .result-eyebrow { display: none; }
-  .result-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
-  .result-meta { font-size: 12px; color: var(--text3); }
-  .result-body { padding: 1.25rem; }
-  .r-section { margin-bottom: 1.25rem; }
-  .r-section:last-child { margin-bottom: 0; }
-  .r-section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 0.6rem;
-    padding-bottom: 5px;
-    border-bottom: 1px solid var(--border);
-  }
-  .r-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem; }
-  .r-field-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
-  .r-field-value { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.5; }
-  .r-text { font-size: 13px; color: var(--text2); line-height: 1.6; white-space: pre-wrap; }
-  .r-tag {
-    display: inline;
-    background: transparent;
-    color: var(--text2);
-    font-size: 13px;
-    font-weight: 400;
-    padding: 0;
-    margin: 0;
-    border: 0;
-  }
-  .r-tag + .r-tag::before { content: ', '; }
-  .result-footer {
-    padding: 1rem 1.25rem;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    display: flex;
-    gap: 1rem 1.25rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .result-footer-note { font-size: 12px; color: var(--text3); flex: 1; min-width: 120px; }
-
-  .copy-variations { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 0.35rem; }
-  .copy-var-block { padding-bottom: 1.15rem; border-bottom: 1px solid var(--border); }
-  .copy-var-block:last-child { border-bottom: 0; padding-bottom: 0; }
-  .copy-var-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.65rem; }
-  .copy-var-row { margin-bottom: 0.55rem; }
-  .copy-var-row:last-child { margin-bottom: 0; }
-  .copy-var-lbl { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
-  .copy-var-val { font-size: 13px; color: var(--text); line-height: 1.5; white-space: pre-wrap; }
-  .copy-var-val strong { font-weight: 600; }
-  .copy-placeholder-stack { display: flex; flex-direction: column; gap: 10px; }
-  .copy-loading {
-    min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 10px; border: 0; border-radius: 0; background: transparent;
-  }
-  .copy-loading-spinner {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 2px solid var(--border); border-top-color: var(--text3);
-    animation: spin 0.8s linear infinite;
-  }
-  .copy-loading-text { font-size: 13px; color: var(--text3); }
-
-  .access-modal-overlay {
-    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-    padding: 1rem; background: var(--overlay); backdrop-filter: blur(4px); z-index: 1000;
-  }
-  .access-modal-overlay.show { display: flex; animation: fadeUp 0.25s ease both; }
-  .access-modal-card {
-    width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow-sm);
-  }
-  .access-modal-title { font-size: 1.45rem; font-weight: 600; line-height: 1.2; margin-bottom: 0.5rem; }
-  .access-modal-sub { font-size: 14px; color: var(--text2); margin-bottom: 1rem; }
-  .access-modal-error { color: var(--danger); font-size: 13px; margin-top: 0.65rem; min-height: 18px; }
-  .access-modal-actions { margin-top: 1rem; display: flex; justify-content: flex-end; }
-  .access-modal-actions .btn-primary { padding: 8px 16px; border: 1px solid var(--border); border-bottom: 1px solid var(--text); }
-
-  @media (max-width: 520px) {
-    body { padding-top: 1rem; }
-    .topbar { flex-direction: column; align-items: flex-start; }
-    .field-row, .r-row { grid-template-columns: 1fr; }
-    .submit-area { flex-direction: column; align-items: stretch; }
-    .btn-group { flex-direction: column; }
-    .result-footer {
-      flex-direction: row;
-      align-items: stretch;
-    }
-    .result-footer-note {
-      flex: 1 1 100%;
-      min-width: 100%;
-    }
-    .result-footer .btn {
-      flex: 1 1 calc(50% - 4px);
-      justify-content: center;
-    }
-    .result-footer #btnNew { flex-basis: 100%; }
-    .header { padding: 1.2rem; }
-    .header-title { font-size: 1.65rem; }
-  }
-</style>
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <div class="page">
@@ -402,8 +31,9 @@
   </div>
 
   <div class="header">
+    <div class="header-eyebrow"><span class="badge">Gestão de Tráfego</span></div>
     <h1 class="header-title">Solicitação de Criativo</h1>
-    <p class="header-sub">Campos obrigatórios para gerar o briefing e a copy.</p>
+    <p class="header-sub">Preencha os campos obrigatórios para gerar o briefing e, se desejar, a copy com IA.</p>
     <div class="progress-wrap">
       <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
       <span class="progress-label" id="progressLabel">0 de 8 campos</span>
@@ -443,31 +73,28 @@
 
     <div class="field" id="wrap-formato">
       <label>Formato <span class="req">*</span></label>
-      <select id="f-formato">
-        <option value="">Selecione</option>
-        <option>Feed estático</option>
-        <option>Carrossel</option>
-        <option>Stories / Reels</option>
-        <option>Vídeo</option>
-        <option>Banner</option>
-        <option value="__outro__">Outro (descrever abaixo)</option>
-      </select>
-      <input type="text" id="f-formato-outro" placeholder="Outro formato..." style="margin-top:8px;">
+      <div class="pill-group" id="pg-formato" role="group" aria-label="Formatos de criativo">
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Feed estático</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Carrossel</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Stories / Reels</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Vídeo</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Banner</div>
+      </div>
+      <input type="text" id="f-formato-outro" class="field-input-conditional" placeholder="Outro formato (opcional)">
       <span class="err-msg">Selecione ou descreva um formato.</span>
     </div>
 
     <div class="field" id="wrap-plataforma">
       <label>Plataforma(s) de veiculação <span class="req">*</span></label>
-      <select id="f-plataforma" multiple size="6" aria-label="Plataformas (Ctrl ou Cmd para múltiplas)">
-        <option>Meta (Facebook / Instagram)</option>
-        <option>Google Ads</option>
-        <option>TikTok</option>
-        <option>YouTube</option>
-        <option>LinkedIn</option>
-        <option>WhatsApp</option>
-      </select>
-      <p class="hint" style="margin-top:6px;">Segure Ctrl (Windows) ou Cmd (Mac) para selecionar várias.</p>
-      <input type="text" id="f-plataforma-outro" placeholder="Outra plataforma..." style="margin-top:8px;">
+      <div class="tile-grid" id="tg-plataforma" role="group" aria-label="Plataformas de veiculação">
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="Meta (Facebook / Instagram)" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>Meta (Facebook / Instagram)</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="Google Ads" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>Google Ads</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="TikTok" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>TikTok</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="YouTube" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>YouTube</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="LinkedIn" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>LinkedIn</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="WhatsApp" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>WhatsApp</div>
+      </div>
+      <input type="text" id="f-plataforma-outro" class="field-input-conditional" placeholder="Outra plataforma (opcional)">
       <span class="err-msg">Selecione ao menos uma plataforma.</span>
     </div>
 
@@ -482,14 +109,15 @@
       </div>
       <div class="field" id="wrap-dimensoes">
         <label>Dimensões / Resolução</label>
-        <select id="f-dimensoes-preset">
-          <option value="">Não especificado</option>
-          <option>4:5</option>
-          <option>9:16</option>
-          <option>1:1</option>
-          <option>16:9</option>
-        </select>
-        <input type="text" id="f-dimensoes-outro" placeholder="Outra dimensão ou resolução..." style="margin-top:8px;">
+        <div class="dimensoes-row">
+          <div class="pill-group" id="pg-dimensoes" role="group" aria-label="Proporções comuns">
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">4:5</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">9:16</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">1:1</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">16:9</div>
+          </div>
+        </div>
+        <input type="text" id="f-dimensoes-outro" class="field-input-conditional" placeholder="Outra dimensão ou resolução (opcional)">
       </div>
     </div>
   </div>
@@ -522,15 +150,15 @@
 
     <div class="field">
       <label>Referências visuais / Inspirações</label>
-      <textarea id="f-referencias" placeholder="Cole links ou descreva um estilo de referência." style="min-height:70px;"></textarea>
+      <textarea id="f-referencias" class="textarea--short" placeholder="Cole links ou descreva um estilo de referência."></textarea>
     </div>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">4</div><span class="section-title">Restrições e Observações</span></div>
-    <div class="field"><label>Elementos obrigatórios</label><textarea id="f-obrigatorios" placeholder="Ex: logo no canto superior, cor azul da marca, selo de garantia..." style="min-height:70px;"></textarea></div>
-    <div class="field"><label>O que evitar / Restrições</label><textarea id="f-restricoes" placeholder="Ex: não usar fundo escuro, evitar palavras como 'grátis'..." style="min-height:70px;"></textarea></div>
-    <div class="field"><label>Observações adicionais</label><textarea id="f-obs" placeholder="Qualquer informação relevante que não se encaixou nos campos acima." style="min-height:70px;"></textarea></div>
+    <div class="field"><label>Elementos obrigatórios</label><textarea id="f-obrigatorios" class="textarea--short" placeholder="Ex: logo no canto superior, cor azul da marca, selo de garantia..."></textarea></div>
+    <div class="field"><label>O que evitar / Restrições</label><textarea id="f-restricoes" class="textarea--short" placeholder="Ex: não usar fundo escuro, evitar palavras como 'grátis'..."></textarea></div>
+    <div class="field"><label>Observações adicionais</label><textarea id="f-obs" class="textarea--short" placeholder="Qualquer informação relevante que não se encaixou nos campos acima."></textarea></div>
   </div>
 
   <div class="submit-area">
@@ -550,24 +178,24 @@
     <div class="result-body">
       <div class="r-section">
         <div class="r-section-label">Identificação</div>
-        <div style="margin-bottom:.5rem"><div class="r-field-label">Solicitante</div><div class="r-field-value" id="r-nome"></div></div>
-        <div style="margin-bottom:.5rem"><div class="r-field-label">Campanha / Projeto</div><div class="r-field-value" id="r-campanha"></div></div>
-        <div style="margin-bottom:.5rem"><div class="r-field-label">Cliente</div><div class="r-field-value" id="r-cliente"></div></div>
-        <div style="margin-bottom:.25rem"><div class="r-field-label">Produto / Link</div><div class="r-field-value" id="r-produto"></div></div>
+        <div class="r-id-line"><div class="r-field-label">Solicitante</div><div class="r-field-value" id="r-nome"></div></div>
+        <div class="r-id-line"><div class="r-field-label">Campanha / Projeto</div><div class="r-field-value" id="r-campanha"></div></div>
+        <div class="r-id-line"><div class="r-field-label">Cliente</div><div class="r-field-value" id="r-cliente"></div></div>
+        <div class="r-id-line r-id-line--tight"><div class="r-field-label">Produto / Link</div><div class="r-field-value" id="r-produto"></div></div>
       </div>
       <div class="r-section">
         <div class="r-section-label">Tipo de Criativo</div>
-        <div style="margin-bottom:.6rem"><div class="r-field-label">Formato</div><div class="r-field-value" id="r-formato" style="margin-top:4px;"></div></div>
+        <div class="r-id-line r-value-spaced"><div class="r-field-label">Formato</div><div class="r-field-value" id="r-formato"></div></div>
         <div class="r-row">
           <div><div class="r-field-label">Versões</div><div class="r-field-value" id="r-versoes"></div></div>
         </div>
-        <div><div class="r-field-label">Plataformas</div><div class="r-field-value" id="r-plataformas" style="margin-top:4px;"></div></div>
+        <div class="r-value-spaced"><div class="r-field-label">Plataformas</div><div class="r-field-value" id="r-plataformas"></div></div>
       </div>
       <div class="r-section">
         <div class="r-section-label">Briefing</div>
-        <div style="margin-bottom:.75rem"><div class="r-field-label">Objetivo do anúncio</div><div class="r-text" id="r-objetivo"></div></div>
-        <div style="margin-bottom:.75rem"><div class="r-field-label">Público-alvo</div><div class="r-text" id="r-publico"></div></div>
-        <div style="margin-bottom:.75rem"><div class="r-field-label">Mensagem principal</div><div class="r-text" id="r-mensagem"></div></div>
+        <div class="r-brief-line"><div class="r-field-label">Objetivo do anúncio</div><div class="r-text" id="r-objetivo"></div></div>
+        <div class="r-brief-line"><div class="r-field-label">Público-alvo</div><div class="r-text" id="r-publico"></div></div>
+        <div class="r-brief-line"><div class="r-field-label">Mensagem principal</div><div class="r-text" id="r-mensagem"></div></div>
         <div class="r-row">
           <div id="r-cta-wrap"><div class="r-field-label">CTA</div><div class="r-field-value" id="r-cta"></div></div>
         </div>
@@ -576,13 +204,13 @@
         <div class="r-section-label">Copy do criativo</div>
         <div id="copySectionContent"></div>
       </div>
-      <div class="r-section" id="r-extras-section" style="display:none">
+      <div class="r-section u-hidden" id="r-extras-section">
         <div class="r-section-label">Restrições e Observações</div>
         <div id="r-extras-body"></div>
       </div>
     </div>
     <div class="result-footer">
-      <span class="result-footer-note">Copie o briefing ou gere a copy com IA (a matriz de instruções é aplicada no servidor).</span>
+      <span class="result-footer-note">Copie o briefing ou gere a copy com IA (instruções no servidor).</span>
       <button class="btn btn-copy" id="btnCopy">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         Copiar texto
@@ -603,7 +231,7 @@
   <div class="access-modal-card" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle">
     <h2 class="access-modal-title" id="accessModalTitle">Acesso protegido</h2>
     <p class="access-modal-sub">Insira o código de acesso para gerar copy com IA.</p>
-    <div class="field" style="margin-bottom:0;">
+    <div class="field field--tight">
       <input type="password" id="accessCodeInput" placeholder="Código de acesso">
       <div class="access-modal-error" id="accessModalError"></div>
     </div>
@@ -614,6 +242,9 @@
 </div>
 
 <script>
+let selectedPlatforms = [];
+let selectedFormats = [];
+let selectedDimensoes = [];
 let fd = {};
 let jsPDF = null;
 let isGeneratingCopy = false;
@@ -623,38 +254,27 @@ const THEME_STORAGE_KEY = 'aurea_theme_preference';
 let activeTheme = 'light';
 
 function getSelectedPlatforms() {
-  var sel = document.getElementById('f-plataforma');
-  if (!sel || !sel.options) return [];
-  return Array.prototype.slice.call(sel.selectedOptions)
-    .map(function(opt) { return (opt.textContent || opt.value || '').trim(); })
-    .filter(Boolean);
+  return selectedPlatforms.slice();
 }
 
 function collectFormatos() {
-  var sel = document.getElementById('f-formato');
-  if (!sel || !sel.value) return [];
-  if (sel.value === '__outro__') {
-    var o = g('f-formato-outro');
-    return o ? [o] : [];
-  }
-  var label = sel.options[sel.selectedIndex];
-  return label ? [label.textContent.trim()] : [];
+  var outroRaw = (g('f-formato-outro') || '').trim();
+  var outroLow = outroRaw.toLowerCase();
+  var deduped = selectedFormats.filter(function(f) { return f.toLowerCase() !== outroLow; });
+  if (outroRaw) deduped.push(outroRaw);
+  return deduped.filter(Boolean);
 }
 
 function collectDimensoes() {
-  var presetEl = document.getElementById('f-dimensoes-preset');
-  var parts = [];
-  if (presetEl && presetEl.value) parts.push(presetEl.value.trim());
-  var other = g('f-dimensoes-outro');
-  if (other) parts.push(other);
-  return parts.join(', ');
+  var outroRaw = (g('f-dimensoes-outro') || '').trim();
+  var outroLow = outroRaw.toLowerCase();
+  var deduped = selectedDimensoes.filter(function(d) { return d.toLowerCase() !== outroLow; });
+  if (outroRaw) deduped.push(outroRaw);
+  return deduped.filter(Boolean).join(', ');
 }
 
 function formatoValido() {
-  var sel = document.getElementById('f-formato');
-  if (!sel || !sel.value) return '';
-  if (sel.value === '__outro__') return g('f-formato-outro') ? 'ok' : '';
-  return 'ok';
+  return selectedFormats.length > 0 || g('f-formato-outro') ? 'ok' : '';
 }
 
 function plataformasValidas() {
@@ -687,8 +307,13 @@ function updateProgress() {
   document.getElementById('progressBar').style.width = Math.round(filled / total * 100) + '%';
   document.getElementById('progressLabel').textContent = filled + ' de ' + total + ' campos';
   var m = document.getElementById('statusMsg');
-  if (filled === total) { m.textContent = 'Tudo preenchido. Pronto para gerar!'; m.style.color = 'var(--success)'; }
-  else { m.textContent = (total - filled) + ' campo(s) obrigatório(s) faltando.'; m.style.color = 'var(--text3)'; }
+  if (filled === total) {
+    m.textContent = 'Tudo preenchido. Pronto para gerar!';
+    m.classList.add('status-msg--complete');
+  } else {
+    m.textContent = (total - filled) + ' campo(s) obrigatório(s) faltando.';
+    m.classList.remove('status-msg--complete');
+  }
 }
 
 function showToast(msg) {
@@ -803,7 +428,7 @@ function boldToHTML(text) {
 }
 
 function getCopyPlaceholderHTML() {
-  return '<p class="r-text" style="color:var(--text3);font-size:13px;">Gere a copy com IA: o servidor aplica a matriz fixa e retorna 5 variações (Meta DCO).</p>';
+  return '<p class="copy-hint r-text">Gere a copy com IA: o servidor aplica a matriz fixa e retorna 5 variações (Meta DCO).</p>';
 }
 
 function renderCopyLoading() {
@@ -857,7 +482,7 @@ function renderResult(d) {
   document.getElementById('r-campanha').textContent = d.campanha;
   var clienteEl = document.getElementById('r-cliente'); if (clienteEl) clienteEl.textContent = d.cliente || '—';
   var produtoEl = document.getElementById('r-produto'); if (produtoEl) produtoEl.textContent = d.produto || '—';
-  var fmtTags = d.formatos.map(function(f){ return '<span class="r-tag">' + escHTML(f) + '</span>'; }).join('') + (d.dimensoes ? ' <span style="font-size:12px;color:var(--text3)">· ' + escHTML(d.dimensoes) + '</span>' : '');
+  var fmtTags = d.formatos.map(function(f){ return '<span class="r-tag">' + escHTML(f) + '</span>'; }).join('') + (d.dimensoes ? ' <span class="r-dim-note">· ' + escHTML(d.dimensoes) + '</span>' : '');
   document.getElementById('r-formato').innerHTML = fmtTags;
   document.getElementById('r-versoes').textContent = d.versoes;
   document.getElementById('r-plataformas').innerHTML = d.plataformas.map(function(p){ return '<span class="r-tag">' + escHTML(p) + '</span>'; }).join('');
@@ -873,13 +498,14 @@ function renderResult(d) {
     ['O que evitar', d.restricoes],
     ['Observações', d.obs]
   ].filter(function(entry){ return entry[1]; });
+  var exSec = document.getElementById('r-extras-section');
   if (extras.length) {
-    document.getElementById('r-extras-section').style.display = '';
+    exSec.classList.remove('u-hidden');
     document.getElementById('r-extras-body').innerHTML = extras.map(function(entry){
-      return '<div style="margin-bottom:.7rem"><div class="r-field-label">' + escHTML(entry[0]) + '</div><div class="r-text">' + escHTML(entry[1]) + '</div></div>';
+      return '<div class="r-brief-line"><div class="r-field-label">' + escHTML(entry[0]) + '</div><div class="r-text">' + escHTML(entry[1]) + '</div></div>';
     }).join('');
   } else {
-    document.getElementById('r-extras-section').style.display = 'none';
+    exSec.classList.add('u-hidden');
   }
   renderCopySection(d);
 }
@@ -1097,12 +723,15 @@ function newForm() {
 
 function resetForm() {
   document.querySelectorAll('input[type="text"],input[type="password"],textarea,select').forEach(function(el){ el.value = ''; });
+  document.querySelectorAll('.pill,.tile').forEach(function(el){ el.classList.remove('active'); el.setAttribute('aria-pressed', 'false'); });
   document.querySelectorAll('.field').forEach(function(el){ el.classList.remove('has-error'); });
-  var plat = document.getElementById('f-plataforma');
-  if (plat) Array.prototype.forEach.call(plat.options, function(opt) { opt.selected = false; });
+  selectedPlatforms = [];
+  selectedFormats = [];
+  selectedDimensoes = [];
   fd = {};
   isGeneratingCopy = false;
   closeAccessModal();
+  document.getElementById('statusMsg').classList.remove('status-msg--complete');
   updateProgress();
   renderCopySection(fd);
 }
@@ -1430,20 +1059,59 @@ document.addEventListener('DOMContentLoaded', function() {
     themeDarkBtn.addEventListener('click', function() { setTheme('dark'); });
   }
 
-  var formatoSel = document.getElementById('f-formato');
-  if (formatoSel) {
-    formatoSel.addEventListener('change', function() {
+  function onPillKey(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      event.currentTarget.click();
+    }
+  }
+
+  document.querySelectorAll('#pg-formato .pill').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      el.setAttribute('aria-pressed', el.classList.contains('active') ? 'true' : 'false');
+      var txt = el.textContent.trim();
+      if (el.classList.contains('active')) {
+        if (selectedFormats.indexOf(txt) === -1) selectedFormats.push(txt);
+      } else {
+        selectedFormats = selectedFormats.filter(function(f) { return f !== txt; });
+      }
       if (formatoValido()) clearError('wrap-formato');
       updateProgress();
     });
-  }
-  var platSel = document.getElementById('f-plataforma');
-  if (platSel) {
-    platSel.addEventListener('change', function() {
+    el.addEventListener('keydown', onPillKey);
+  });
+
+  document.querySelectorAll('#pg-dimensoes .pill').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      el.setAttribute('aria-pressed', el.classList.contains('active') ? 'true' : 'false');
+      var txt = el.textContent.trim();
+      if (el.classList.contains('active')) {
+        if (selectedDimensoes.indexOf(txt) === -1) selectedDimensoes.push(txt);
+      } else {
+        selectedDimensoes = selectedDimensoes.filter(function(d) { return d !== txt; });
+      }
+      updateProgress();
+    });
+    el.addEventListener('keydown', onPillKey);
+  });
+
+  document.querySelectorAll('#tg-plataforma .tile').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('active');
+      el.setAttribute('aria-pressed', el.classList.contains('active') ? 'true' : 'false');
+      var val = el.getAttribute('data-value') || '';
+      if (el.classList.contains('active')) {
+        if (selectedPlatforms.indexOf(val) === -1) selectedPlatforms.push(val);
+      } else {
+        selectedPlatforms = selectedPlatforms.filter(function(p) { return p !== val; });
+      }
       if (plataformasValidas()) clearError('wrap-plataforma');
       updateProgress();
     });
-  }
+    el.addEventListener('keydown', onPillKey);
+  });
 
   document.getElementById('btnReset').addEventListener('click', resetForm);
   document.getElementById('btnSubmit').addEventListener('click', submitForm);
@@ -1456,8 +1124,8 @@ document.addEventListener('DOMContentLoaded', function() {
       updateProgress();
       var wrap = el.closest('.field');
       if (!wrap || !wrap.classList.contains('has-error')) return;
-      if (el.id === 'f-formato' && formatoValido()) wrap.classList.remove('has-error');
-      else if (el.id === 'f-plataforma' && plataformasValidas()) wrap.classList.remove('has-error');
+      if (el.id === 'f-formato-outro' && formatoValido()) wrap.classList.remove('has-error');
+      else if (el.id === 'f-plataforma-outro' && plataformasValidas()) wrap.classList.remove('has-error');
       else if (el.value && el.value.trim && el.value.trim()) wrap.classList.remove('has-error');
     }
     el.addEventListener('input', onFieldChange);

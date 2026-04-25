@@ -258,16 +258,18 @@ function getSelectedPlatforms() {
 }
 
 function collectFormatos() {
-  var outroVal = (g('f-formato-outro') || '').trim().toLowerCase();
-  var deduped = selectedFormats.filter(function(f) { return f.toLowerCase() !== outroVal; });
-  if (outroVal) deduped.push(g('f-formato-outro').trim());
+  var outroRaw = (g('f-formato-outro') || '').trim();
+  var outroLow = outroRaw.toLowerCase();
+  var deduped = selectedFormats.filter(function(f) { return f.toLowerCase() !== outroLow; });
+  if (outroRaw) deduped.push(outroRaw);
   return deduped.filter(Boolean);
 }
 
 function collectDimensoes() {
-  var outroVal = (g('f-dimensoes-outro') || '').trim().toLowerCase();
-  var deduped = selectedDimensoes.filter(function(d) { return d.toLowerCase() !== outroVal; });
-  if (outroVal) deduped.push(g('f-dimensoes-outro').trim());
+  var outroRaw = (g('f-dimensoes-outro') || '').trim();
+  var outroLow = outroRaw.toLowerCase();
+  var deduped = selectedDimensoes.filter(function(d) { return d.toLowerCase() !== outroLow; });
+  if (outroRaw) deduped.push(outroRaw);
   return deduped.filter(Boolean).join(', ');
 }
 

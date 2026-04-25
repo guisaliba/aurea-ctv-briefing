@@ -179,6 +179,21 @@ body {
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .section { animation: none; }
+  .section:nth-child(3),
+  .section:nth-child(4),
+  .section:nth-child(5),
+  .section:nth-child(6) { animation-delay: 0s; }
+  .progress-bar-inner { transition: none; }
+}
+
 .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border); }
 .section-num {
   width: 22px; height: 22px; border-radius: 50%;
@@ -230,7 +245,7 @@ select {
   background: var(--danger-light) !important;
   box-shadow: 0 0 0 3px rgba(182, 72, 72, 0.12) !important;
 }
-.field.has-error .pill-group .pill-wrap,
+.field.has-error .pill-group,
 .field.has-error .tile-grid { outline: 2px solid var(--danger-border); border-radius: var(--radius-sm); }
 .field.has-error label { color: var(--danger); }
 .field.has-error .err-msg { display: block; }

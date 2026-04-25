@@ -74,11 +74,11 @@
     <div class="field" id="wrap-formato">
       <label>Formato <span class="req">*</span></label>
       <div class="pill-group" id="pg-formato" role="group" aria-label="Formatos de criativo">
-        <div class="pill" role="button" tabindex="0" data-pill="formato">Feed estático</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato">Carrossel</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato">Stories / Reels</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato">Vídeo</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato">Banner</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Feed estático</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Carrossel</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Stories / Reels</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Vídeo</div>
+        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Banner</div>
       </div>
       <input type="text" id="f-formato-outro" class="field-input-conditional" placeholder="Outro formato (opcional)">
       <span class="err-msg">Selecione ou descreva um formato.</span>
@@ -87,12 +87,12 @@
     <div class="field" id="wrap-plataforma">
       <label>Plataforma(s) de veiculação <span class="req">*</span></label>
       <div class="tile-grid" id="tg-plataforma" role="group" aria-label="Plataformas de veiculação">
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma"><div class="tile-check" aria-hidden="true">✓</div>Meta (Facebook / Instagram)</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma"><div class="tile-check" aria-hidden="true">✓</div>Google Ads</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma"><div class="tile-check" aria-hidden="true">✓</div>TikTok</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma"><div class="tile-check" aria-hidden="true">✓</div>YouTube</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma"><div class="tile-check" aria-hidden="true">✓</div>LinkedIn</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma"><div class="tile-check" aria-hidden="true">✓</div>WhatsApp</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="Meta (Facebook / Instagram)" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>Meta (Facebook / Instagram)</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="Google Ads" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>Google Ads</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="TikTok" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>TikTok</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="YouTube" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>YouTube</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="LinkedIn" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>LinkedIn</div>
+        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="WhatsApp" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>WhatsApp</div>
       </div>
       <input type="text" id="f-plataforma-outro" class="field-input-conditional" placeholder="Outra plataforma (opcional)">
       <span class="err-msg">Selecione ao menos uma plataforma.</span>
@@ -111,10 +111,10 @@
         <label>Dimensões / Resolução</label>
         <div class="dimensoes-row">
           <div class="pill-group" id="pg-dimensoes" role="group" aria-label="Proporções comuns">
-            <div class="pill" role="button" tabindex="0" data-pill="dim">4:5</div>
-            <div class="pill" role="button" tabindex="0" data-pill="dim">9:16</div>
-            <div class="pill" role="button" tabindex="0" data-pill="dim">1:1</div>
-            <div class="pill" role="button" tabindex="0" data-pill="dim">16:9</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">4:5</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">9:16</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">1:1</div>
+            <div class="pill" role="button" tabindex="0" data-pill="dim" aria-pressed="false">16:9</div>
           </div>
         </div>
         <input type="text" id="f-dimensoes-outro" class="field-input-conditional" placeholder="Outra dimensão ou resolução (opcional)">
@@ -258,11 +258,17 @@ function getSelectedPlatforms() {
 }
 
 function collectFormatos() {
-  return selectedFormats.concat(g('f-formato-outro')).filter(Boolean);
+  var outroVal = (g('f-formato-outro') || '').trim().toLowerCase();
+  var deduped = selectedFormats.filter(function(f) { return f.toLowerCase() !== outroVal; });
+  if (outroVal) deduped.push(g('f-formato-outro').trim());
+  return deduped.filter(Boolean);
 }
 
 function collectDimensoes() {
-  return selectedDimensoes.concat(g('f-dimensoes-outro')).filter(Boolean).join(', ');
+  var outroVal = (g('f-dimensoes-outro') || '').trim().toLowerCase();
+  var deduped = selectedDimensoes.filter(function(d) { return d.toLowerCase() !== outroVal; });
+  if (outroVal) deduped.push(g('f-dimensoes-outro').trim());
+  return deduped.filter(Boolean).join(', ');
 }
 
 function formatoValido() {
@@ -1093,11 +1099,11 @@ document.addEventListener('DOMContentLoaded', function() {
     el.addEventListener('click', function() {
       el.classList.toggle('active');
       el.setAttribute('aria-pressed', el.classList.contains('active') ? 'true' : 'false');
-      var txt = (el.textContent || '').replace(/✓/g, '').trim();
+      var val = el.getAttribute('data-value') || '';
       if (el.classList.contains('active')) {
-        if (selectedPlatforms.indexOf(txt) === -1) selectedPlatforms.push(txt);
+        if (selectedPlatforms.indexOf(val) === -1) selectedPlatforms.push(val);
       } else {
-        selectedPlatforms = selectedPlatforms.filter(function(p) { return p !== txt; });
+        selectedPlatforms = selectedPlatforms.filter(function(p) { return p !== val; });
       }
       if (plataformasValidas()) clearError('wrap-plataforma');
       updateProgress();

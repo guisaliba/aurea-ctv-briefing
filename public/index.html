@@ -36,7 +36,7 @@
     <p class="header-sub">Preencha os campos obrigatórios para gerar o briefing e, se desejar, a copy com IA.</p>
     <div class="progress-wrap">
       <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
-      <span class="progress-label" id="progressLabel">0 de 8 campos</span>
+      <span class="progress-label" id="progressLabel">0 de 7 campos</span>
     </div>
   </div>
 
@@ -71,28 +71,27 @@
   <div class="section">
     <div class="section-header"><div class="section-num">2</div><span class="section-title">Tipo de Criativo</span></div>
 
-    <div class="field" id="wrap-formato">
-      <label>Formato <span class="req">*</span></label>
-      <div class="pill-group" id="pg-formato" role="group" aria-label="Formatos de criativo">
-        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Feed estático</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Carrossel</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Stories / Reels</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Vídeo</div>
-        <div class="pill" role="button" tabindex="0" data-pill="formato" aria-pressed="false">Banner</div>
+    <div class="field">
+      <label>Formatos gerados automaticamente</label>
+      <div class="locked-scope" aria-label="Formatos fixos enviados para a IA">
+        <span class="r-tag">Feed estático</span>
+        <span class="r-tag">Carrossel</span>
+        <span class="r-tag">Stories / Reels</span>
+        <span class="r-tag">Vídeo</span>
+        <span class="r-tag">Banner</span>
       </div>
-      <input type="text" id="f-formato-outro" class="field-input-conditional" placeholder="Outro formato (opcional)">
-      <span class="err-msg">Selecione ou descreva um formato.</span>
+      <p class="hint">Esses formatos são fixos e enviados à IA em toda geração de copy.</p>
     </div>
 
     <div class="field" id="wrap-plataforma">
       <label>Plataforma(s) de veiculação <span class="req">*</span></label>
       <div class="tile-grid" id="tg-plataforma" role="group" aria-label="Plataformas de veiculação">
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="Meta (Facebook / Instagram)" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>Meta (Facebook / Instagram)</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="Google Ads" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>Google Ads</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="TikTok" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>TikTok</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="YouTube" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>YouTube</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="LinkedIn" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>LinkedIn</div>
-        <div class="tile" role="button" tabindex="0" data-tile="plataforma" data-value="WhatsApp" aria-pressed="false"><div class="tile-check" aria-hidden="true">✓</div>WhatsApp</div>
+        <label class="platform-option"><input class="platform-checkbox" type="checkbox" name="plataforma" value="Meta (Facebook / Instagram)"><span class="tile"><span class="tile-check" aria-hidden="true">✓</span><span>Meta (Facebook / Instagram)</span></span></label>
+        <label class="platform-option"><input class="platform-checkbox" type="checkbox" name="plataforma" value="Google Ads"><span class="tile"><span class="tile-check" aria-hidden="true">✓</span><span>Google Ads</span></span></label>
+        <label class="platform-option"><input class="platform-checkbox" type="checkbox" name="plataforma" value="TikTok"><span class="tile"><span class="tile-check" aria-hidden="true">✓</span><span>TikTok</span></span></label>
+        <label class="platform-option"><input class="platform-checkbox" type="checkbox" name="plataforma" value="YouTube"><span class="tile"><span class="tile-check" aria-hidden="true">✓</span><span>YouTube</span></span></label>
+        <label class="platform-option"><input class="platform-checkbox" type="checkbox" name="plataforma" value="LinkedIn"><span class="tile"><span class="tile-check" aria-hidden="true">✓</span><span>LinkedIn</span></span></label>
+        <label class="platform-option"><input class="platform-checkbox" type="checkbox" name="plataforma" value="WhatsApp"><span class="tile"><span class="tile-check" aria-hidden="true">✓</span><span>WhatsApp</span></span></label>
       </div>
       <input type="text" id="f-plataforma-outro" class="field-input-conditional" placeholder="Outra plataforma (opcional)">
       <span class="err-msg">Selecione ao menos uma plataforma.</span>
@@ -210,11 +209,7 @@
       </div>
     </div>
     <div class="result-footer">
-      <span class="result-footer-note">Copie o briefing ou gere a copy com IA (instruções no servidor).</span>
-      <button class="btn btn-copy" id="btnCopy">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Copiar texto
-      </button>
+      <span class="result-footer-note">Revise o briefing. Se estiver tudo certo, gere a copy com IA.</span>
       <button class="btn btn-claude" id="btnClaude">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.8 9.3 4.7 12.2 6 9.3 7.3 8 10.2 6.7 7.3 3.8 6 6.7 4.7 8 1.8Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 9.4 13 10.7 14.3 11.3 13 11.9 12.4 13.2 11.8 11.9 10.5 11.3 11.8 10.7 12.4 9.4Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Gerar copy
@@ -242,8 +237,13 @@
 </div>
 
 <script>
-let selectedPlatforms = [];
-let selectedFormats = [];
+const LOCKED_CREATIVE_FORMATS = [
+  'Feed estático',
+  'Carrossel',
+  'Stories / Reels',
+  'Vídeo',
+  'Banner'
+];
 let selectedDimensoes = [];
 let fd = {};
 let jsPDF = null;
@@ -254,15 +254,13 @@ const THEME_STORAGE_KEY = 'aurea_theme_preference';
 let activeTheme = 'light';
 
 function getSelectedPlatforms() {
-  return selectedPlatforms.slice();
+  return Array.prototype.slice.call(document.querySelectorAll('input[name="plataforma"]:checked'))
+    .map(function(input) { return input.value.trim(); })
+    .filter(Boolean);
 }
 
 function collectFormatos() {
-  var outroRaw = (g('f-formato-outro') || '').trim();
-  var outroLow = outroRaw.toLowerCase();
-  var deduped = selectedFormats.filter(function(f) { return f.toLowerCase() !== outroLow; });
-  if (outroRaw) deduped.push(outroRaw);
-  return deduped.filter(Boolean);
+  return LOCKED_CREATIVE_FORMATS.slice();
 }
 
 function collectDimensoes() {
@@ -273,10 +271,6 @@ function collectDimensoes() {
   return deduped.filter(Boolean).join(', ');
 }
 
-function formatoValido() {
-  return selectedFormats.length > 0 || g('f-formato-outro') ? 'ok' : '';
-}
-
 function plataformasValidas() {
   return getSelectedPlatforms().length > 0 || g('f-plataforma-outro') ? 'ok' : '';
 }
@@ -284,7 +278,6 @@ function plataformasValidas() {
 const REQUIRED = [
   { val: () => g('f-nome'),      wrap: 'wrap-nome' },
   { val: () => g('f-campanha'),  wrap: 'wrap-campanha' },
-  { val: () => formatoValido(), wrap: 'wrap-formato' },
   { val: () => plataformasValidas(), wrap: 'wrap-plataforma' },
   { val: () => document.getElementById('f-versoes').value, wrap: 'wrap-versoes' },
   { val: () => g('f-objetivo'),  wrap: 'wrap-objetivo' },
@@ -522,7 +515,7 @@ function buildCopyHTML(d) {
   if (d.cliente) html += row('Cliente', d.cliente);
   if (d.produto) html += row('Produto / Link', d.produto);
   html += '<h1>TIPO DE CRIATIVO</h1>';
-  html += row('Formato', d.formatos.join(', ') + (d.dimensoes ? ' (' + d.dimensoes + ')' : ''));
+  html += row('Formatos fixos (IA)', d.formatos.join(', ') + (d.dimensoes ? ' (' + d.dimensoes + ')' : ''));
   html += row('Plataformas', d.plataformas.join(', '));
   html += row('Versões', d.versoes);
   html += '<h1>BRIEFING</h1>';
@@ -550,56 +543,6 @@ function buildCopyHTML(d) {
     });
   }
   return html;
-}
-
-function copyText() {
-  if (!fd.nome) { showToast('Gere o briefing primeiro.'); return; }
-
-  function markSuccess() {
-    var btn = document.getElementById('btnCopy');
-    btn.classList.add('copied');
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copiado!';
-    showToast('Copiado! Cole no ClickUp com Ctrl+V.');
-    setTimeout(function() {
-      btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> Copiar texto';
-    }, 3000);
-  }
-
-  var html = buildCopyHTML(fd);
-
-  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
-    var blob = new Blob([html], { type: 'text/html' });
-    var item = new window.ClipboardItem({ 'text/html': blob });
-    navigator.clipboard.write([item]).then(markSuccess).catch(function() {
-      fallbackCopyHTML(html, markSuccess);
-    });
-  } else {
-    fallbackCopyHTML(html, markSuccess);
-  }
-}
-
-function fallbackCopyHTML(html, onSuccess) {
-  var div = document.createElement('div');
-  div.innerHTML = html;
-  div.style.cssText = 'position:fixed;top:0;left:0;width:600px;opacity:0;pointer-events:none;';
-  document.body.appendChild(div);
-  var range = document.createRange();
-  range.selectNodeContents(div);
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-  try {
-    var ok = document.execCommand('copy');
-    sel.removeAllRanges();
-    document.body.removeChild(div);
-    if (ok) onSuccess();
-    else showToast('Não foi possível copiar. Abra o formulário direto no navegador.');
-  } catch (e) {
-    sel.removeAllRanges();
-    document.body.removeChild(div);
-    showToast('Não foi possível copiar. Abra o formulário direto no navegador.');
-  }
 }
 
 function downloadPDF() {
@@ -723,10 +666,9 @@ function newForm() {
 
 function resetForm() {
   document.querySelectorAll('input[type="text"],input[type="password"],textarea,select').forEach(function(el){ el.value = ''; });
-  document.querySelectorAll('.pill,.tile').forEach(function(el){ el.classList.remove('active'); el.setAttribute('aria-pressed', 'false'); });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el){ el.checked = false; });
+  document.querySelectorAll('.pill').forEach(function(el){ el.classList.remove('active'); el.setAttribute('aria-pressed', 'false'); });
   document.querySelectorAll('.field').forEach(function(el){ el.classList.remove('has-error'); });
-  selectedPlatforms = [];
-  selectedFormats = [];
   selectedDimensoes = [];
   fd = {};
   isGeneratingCopy = false;
@@ -742,7 +684,7 @@ function buildFormContextLines(d) {
     'Campanha / Projeto: ' + d.campanha,
     d.cliente ? 'Cliente: ' + d.cliente : null,
     d.produto ? 'Produto / Link: ' + d.produto : null,
-    'Formato(s): ' + (d.formatos && d.formatos.length ? d.formatos.join(', ') : '(não informado)'),
+    'Formato(s) criativo(s) fixo(s), sem seleção manual do usuário: ' + (d.formatos && d.formatos.length ? d.formatos.join(', ') : '(não informado)'),
     'Dimensões / Resolução: ' + (d.dimensoes || '(não informado)'),
     'Plataforma(s): ' + (d.plataformas && d.plataformas.length ? d.plataformas.join(', ') : '(não informado)'),
     'Quantidade de versões (briefing): ' + (d.versoes || '(não informado)'),
@@ -1066,22 +1008,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  document.querySelectorAll('#pg-formato .pill').forEach(function(el) {
-    el.addEventListener('click', function() {
-      el.classList.toggle('active');
-      el.setAttribute('aria-pressed', el.classList.contains('active') ? 'true' : 'false');
-      var txt = el.textContent.trim();
-      if (el.classList.contains('active')) {
-        if (selectedFormats.indexOf(txt) === -1) selectedFormats.push(txt);
-      } else {
-        selectedFormats = selectedFormats.filter(function(f) { return f !== txt; });
-      }
-      if (formatoValido()) clearError('wrap-formato');
-      updateProgress();
-    });
-    el.addEventListener('keydown', onPillKey);
-  });
-
   document.querySelectorAll('#pg-dimensoes .pill').forEach(function(el) {
     el.addEventListener('click', function() {
       el.classList.toggle('active');
@@ -1097,25 +1023,15 @@ document.addEventListener('DOMContentLoaded', function() {
     el.addEventListener('keydown', onPillKey);
   });
 
-  document.querySelectorAll('#tg-plataforma .tile').forEach(function(el) {
-    el.addEventListener('click', function() {
-      el.classList.toggle('active');
-      el.setAttribute('aria-pressed', el.classList.contains('active') ? 'true' : 'false');
-      var val = el.getAttribute('data-value') || '';
-      if (el.classList.contains('active')) {
-        if (selectedPlatforms.indexOf(val) === -1) selectedPlatforms.push(val);
-      } else {
-        selectedPlatforms = selectedPlatforms.filter(function(p) { return p !== val; });
-      }
+  document.querySelectorAll('input[name="plataforma"]').forEach(function(input) {
+    input.addEventListener('change', function() {
       if (plataformasValidas()) clearError('wrap-plataforma');
       updateProgress();
     });
-    el.addEventListener('keydown', onPillKey);
   });
 
   document.getElementById('btnReset').addEventListener('click', resetForm);
   document.getElementById('btnSubmit').addEventListener('click', submitForm);
-  document.getElementById('btnCopy').addEventListener('click', copyText);
   document.getElementById('btnClaude').addEventListener('click', handleGenerateCopyClick);
   document.getElementById('btnNew').addEventListener('click', newForm);
 
@@ -1124,8 +1040,7 @@ document.addEventListener('DOMContentLoaded', function() {
       updateProgress();
       var wrap = el.closest('.field');
       if (!wrap || !wrap.classList.contains('has-error')) return;
-      if (el.id === 'f-formato-outro' && formatoValido()) wrap.classList.remove('has-error');
-      else if (el.id === 'f-plataforma-outro' && plataformasValidas()) wrap.classList.remove('has-error');
+      if (el.id === 'f-plataforma-outro' && plataformasValidas()) wrap.classList.remove('has-error');
       else if (el.value && el.value.trim && el.value.trim()) wrap.classList.remove('has-error');
     }
     el.addEventListener('input', onFieldChange);

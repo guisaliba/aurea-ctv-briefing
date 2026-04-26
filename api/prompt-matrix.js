@@ -21,6 +21,10 @@ Because the vast majority of conversions will occur on mobile devices (where med
 
 You must generate exactly 5 distinct variations for each text field to allow for Meta's Dynamic Creative Optimization (DCO) to function without causing data pollution. Take values filled in the form's fields in order to use them as ground base and reference for each of the variations to be generated:
 
+# Locked Creative Format Scope
+
+The creative formats are intentionally locked by the system and are not chosen by the end user. Generate copy that is usable across all of these creative formats in one response: Feed estático, Carrossel, Stories / Reels, Vídeo, Banner. Use the target platform context from the form data to adapt wording, CTA friction, and placement assumptions for each selected platform, but do not omit any of the locked creative formats from your strategic consideration.
+
 1. PRIMARY TEXT (Texto Principal):
 
 ABSOLUTE LIMIT: Maximum of 125 characters per variation. Do not exceed this under any circumstances.

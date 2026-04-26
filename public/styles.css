@@ -269,12 +269,18 @@ select {
   color: var(--accent-contrast);
   font-weight: 500;
 }
-.pill:focus-visible, .tile:focus-visible {
+.pill:focus-visible, .platform-checkbox:focus-visible + .tile {
   outline: 2px solid var(--border2);
   outline-offset: 2px;
 }
 
 .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.platform-option { display: block; cursor: pointer; margin: 0; }
+.platform-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
 .tile {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 14px;
@@ -287,8 +293,8 @@ select {
   transition: all .15s;
   user-select: none;
 }
-.tile:hover { border-color: var(--border2); color: var(--text); }
-.tile.active {
+.platform-option:hover .tile { border-color: var(--border2); color: var(--text); }
+.platform-checkbox:checked + .tile {
   border-color: var(--accent);
   background: var(--accent-light);
   color: var(--text);
@@ -299,7 +305,7 @@ select {
   flex-shrink: 0; display: flex; align-items: center; justify-content: center;
   font-size: 11px; color: transparent; transition: all .15s;
 }
-.tile.active .tile-check {
+.platform-checkbox:checked + .tile .tile-check {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-contrast);

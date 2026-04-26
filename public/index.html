@@ -209,11 +209,7 @@
       </div>
     </div>
     <div class="result-footer">
-      <span class="result-footer-note">Copie o briefing ou gere a copy com IA (instruções no servidor).</span>
-      <button class="btn btn-copy" id="btnCopy">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Copiar texto
-      </button>
+      <span class="result-footer-note">Revise o briefing. Se estiver tudo certo, gere a copy com IA.</span>
       <button class="btn btn-claude" id="btnClaude">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.8 9.3 4.7 12.2 6 9.3 7.3 8 10.2 6.7 7.3 3.8 6 6.7 4.7 8 1.8Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.4 9.4 13 10.7 14.3 11.3 13 11.9 12.4 13.2 11.8 11.9 10.5 11.3 11.8 10.7 12.4 9.4Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Gerar copy
@@ -547,56 +543,6 @@ function buildCopyHTML(d) {
     });
   }
   return html;
-}
-
-function copyText() {
-  if (!fd.nome) { showToast('Gere o briefing primeiro.'); return; }
-
-  function markSuccess() {
-    var btn = document.getElementById('btnCopy');
-    btn.classList.add('copied');
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copiado!';
-    showToast('Copiado! Cole no ClickUp com Ctrl+V.');
-    setTimeout(function() {
-      btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 9.5V2.5A1.5 1.5 0 0 1 3.5 1h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> Copiar texto';
-    }, 3000);
-  }
-
-  var html = buildCopyHTML(fd);
-
-  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
-    var blob = new Blob([html], { type: 'text/html' });
-    var item = new window.ClipboardItem({ 'text/html': blob });
-    navigator.clipboard.write([item]).then(markSuccess).catch(function() {
-      fallbackCopyHTML(html, markSuccess);
-    });
-  } else {
-    fallbackCopyHTML(html, markSuccess);
-  }
-}
-
-function fallbackCopyHTML(html, onSuccess) {
-  var div = document.createElement('div');
-  div.innerHTML = html;
-  div.style.cssText = 'position:fixed;top:0;left:0;width:600px;opacity:0;pointer-events:none;';
-  document.body.appendChild(div);
-  var range = document.createRange();
-  range.selectNodeContents(div);
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-  try {
-    var ok = document.execCommand('copy');
-    sel.removeAllRanges();
-    document.body.removeChild(div);
-    if (ok) onSuccess();
-    else showToast('Não foi possível copiar. Abra o formulário direto no navegador.');
-  } catch (e) {
-    sel.removeAllRanges();
-    document.body.removeChild(div);
-    showToast('Não foi possível copiar. Abra o formulário direto no navegador.');
-  }
 }
 
 function downloadPDF() {
@@ -1086,7 +1032,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('btnReset').addEventListener('click', resetForm);
   document.getElementById('btnSubmit').addEventListener('click', submitForm);
-  document.getElementById('btnCopy').addEventListener('click', copyText);
   document.getElementById('btnClaude').addEventListener('click', handleGenerateCopyClick);
   document.getElementById('btnNew').addEventListener('click', newForm);
 
